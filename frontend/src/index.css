@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0f; }
+::-webkit-scrollbar-thumb { background: #444450; }
