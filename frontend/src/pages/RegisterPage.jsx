@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 
+const GUEST_LIMITS = [
+  'Просмотр всех разделов',
+  'Чтение клинических случаев',
+  'Чтение историй и новостей',
+];
+
 const USER_TYPES = [
   { value: 'Врач', label: 'Врач' },
   { value: 'Студент', label: 'Студент' },
@@ -15,6 +21,8 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const isGuest = form.user_type === 'Гость';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -55,24 +63,6 @@ export default function RegisterPage() {
         </Link>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            { key: 'email', label: 'Эл. почта', type: 'email', placeholder: 'doctor@hospital.ru' },
-            { key: 'username', label: 'Псевдоним', type: 'text', placeholder: 'dr_ivanov' },
-            { key: 'password', label: 'Пароль', type: 'password', placeholder: '8+ символов' },
-          ].map(({ key, label, type, placeholder }) => (
-            <div key={key}>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">{label}</label>
-              <input
-                type={type}
-                value={form[key]}
-                onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                className="w-full bg-[#111118] border border-white/5 px-4 py-3 font-mono text-sm text-[#e8e8e0] focus:outline-none focus:border-[#c8f0a0] transition-colors"
-                placeholder={placeholder}
-                required
-              />
-            </div>
-          ))}
-
           <div>
             <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">Кто ты</label>
             <div className="grid grid-cols-2 gap-1.5">
@@ -93,19 +83,68 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {error && (
-            <p className="font-mono text-[11px] text-[#e05555] border border-[#e05555]/20 px-3 py-2 bg-[#e05555]/5">
-              {error}
-            </p>
-          )}
+          {isGuest ? (
+            <div className="bg-[#111118] border border-white/5 p-5 space-y-4">
+              <p className="font-mono text-[11px] text-[#666670] uppercase tracking-widest">Режим гостя</p>
+              <ul className="space-y-1.5">
+                {GUEST_LIMITS.map(item => (
+                  <li key={item} className="font-serif text-[13px] text-[#888] flex items-center gap-2">
+                    <span className="text-[#c8f0a0] text-[10px]">✓</span> {item}
+                  </li>
+                ))}
+                <li className="font-serif text-[13px] text-[#444450] flex items-center gap-2">
+                  <span className="text-[10px]">✗</span> Лайки и комментарии
+                </li>
+                <li className="font-serif text-[13px] text-[#444450] flex items-center gap-2">
+                  <span className="text-[10px]">✗</span> Личные сообщения
+                </li>
+                <li className="font-serif text-[13px] text-[#444450] flex items-center gap-2">
+                  <span className="text-[10px]">✗</span> Решение клинических случаев
+                </li>
+              </ul>
+              <button
+                type="button"
+                onClick={() => navigate('/diagnoz')}
+                className="w-full bg-[#c8f0a0] text-[#0a0a0f] font-mono text-[11px] uppercase tracking-widest py-3.5 hover:bg-[#d8ffb0] transition-colors"
+              >
+                Просматривать →
+              </button>
+            </div>
+          ) : (
+            <>
+              {[
+                { key: 'email', label: 'Эл. почта', type: 'email', placeholder: 'doctor@hospital.ru' },
+                { key: 'username', label: 'Псевдоним', type: 'text', placeholder: 'dr_ivanov' },
+                { key: 'password', label: 'Пароль', type: 'password', placeholder: '8+ символов' },
+              ].map(({ key, label, type, placeholder }) => (
+                <div key={key}>
+                  <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">{label}</label>
+                  <input
+                    type={type}
+                    value={form[key]}
+                    onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                    className="w-full bg-[#111118] border border-white/5 px-4 py-3 font-mono text-sm text-[#e8e8e0] focus:outline-none focus:border-[#c8f0a0] transition-colors"
+                    placeholder={placeholder}
+                    required={!!form.user_type}
+                  />
+                </div>
+              ))}
 
-          <button
-            type="submit"
-            disabled={loading || !form.user_type}
-            className="w-full bg-[#c8f0a0] text-[#0a0a0f] font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#d8ffb0] transition-colors disabled:opacity-50 mt-2"
-          >
-            {loading ? 'Создаём аккаунт...' : 'Создать аккаунт →'}
-          </button>
+              {error && (
+                <p className="font-mono text-[11px] text-[#e05555] border border-[#e05555]/20 px-3 py-2 bg-[#e05555]/5">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading || !form.user_type}
+                className="w-full bg-[#c8f0a0] text-[#0a0a0f] font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#d8ffb0] transition-colors disabled:opacity-50 mt-2"
+              >
+                {loading ? 'Создаём аккаунт...' : 'Создать аккаунт →'}
+              </button>
+            </>
+          )}
         </form>
 
         <p className="mt-8 text-center font-mono text-[11px] text-[#444450]">

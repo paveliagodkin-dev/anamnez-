@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useAuthStore } from '../hooks/useAuth.js';
 import { formatDistanceToNow } from 'date-fns';
@@ -66,14 +67,24 @@ function PostCard({ post, onLike, onComment }) {
       )}
 
       <div className="flex items-center gap-6 pt-3 border-t border-white/5">
-        <button
-          onClick={handleLike}
-          className={`font-mono text-[11px] flex items-center gap-1.5 transition-colors ${
-            liked ? 'text-[#c8f0a0]' : 'text-[#444450] hover:text-[#e8e8e0]'
-          }`}
-        >
-          ♥ {likesCount}
-        </button>
+        {user ? (
+          <button
+            onClick={handleLike}
+            className={`font-mono text-[11px] flex items-center gap-1.5 transition-colors ${
+              liked ? 'text-[#c8f0a0]' : 'text-[#444450] hover:text-[#e8e8e0]'
+            }`}
+          >
+            ♥ {likesCount}
+          </button>
+        ) : (
+          <Link
+            to="/register"
+            className="font-mono text-[11px] text-[#444450] hover:text-[#666670] transition-colors flex items-center gap-1.5"
+            title="Войди чтобы ставить лайки"
+          >
+            ♥ {likesCount}
+          </Link>
+        )}
         <button
           onClick={loadComments}
           className="font-mono text-[11px] text-[#444450] hover:text-[#e8e8e0] transition-colors flex items-center gap-1.5"
@@ -101,7 +112,7 @@ function PostCard({ post, onLike, onComment }) {
             </div>
           ))}
 
-          {user && (
+          {user ? (
             <form onSubmit={submitComment} className="flex gap-2 mt-3">
               <input
                 value={commentText}
@@ -113,6 +124,11 @@ function PostCard({ post, onLike, onComment }) {
                 →
               </button>
             </form>
+          ) : (
+            <p className="font-mono text-[11px] text-[#444450] pt-1">
+              <Link to="/register" className="text-[#c8f0a0] hover:underline">Зарегистрируйся</Link> или{' '}
+              <Link to="/login" className="text-[#c8f0a0] hover:underline">войди</Link> чтобы оставить комментарий
+            </p>
           )}
         </div>
       )}
