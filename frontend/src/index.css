@@ -19,3 +19,17 @@ body {
 ::-webkit-scrollbar-track { background: #050918; }
 ::-webkit-scrollbar-thumb { background: #2a3a60; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #3a5090; }
+
+@keyframes heartbeat {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.25); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.18); }
+  70%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.heart-pulse {
+  display: inline-block;
+  animation: heartbeat 1.8s ease-in-out infinite;
+}

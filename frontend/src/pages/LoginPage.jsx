@@ -26,6 +26,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#050918] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
+        <div className="text-center mb-4">
+          <span className="heart-pulse text-5xl">🩵</span>
+        </div>
         <Link to="/" className="block font-serif text-2xl font-bold mb-12 text-center text-[#dce8ff]">
           Анам<span className="text-[#4a80f5]">нез</span>
         </Link>
