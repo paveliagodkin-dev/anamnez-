@@ -2,8 +2,16 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 
+const USER_TYPES = [
+  { value: 'Врач', label: 'Врач' },
+  { value: 'Студент', label: 'Студент' },
+  { value: 'Преподаватель', label: 'Преподаватель' },
+  { value: 'Мед. персонал', label: 'Мед. персонал' },
+  { value: 'Гость', label: 'Гость' },
+];
+
 export default function RegisterPage() {
-  const [form, setForm] = useState({ email: '', username: '', password: '' });
+  const [form, setForm] = useState({ email: '', username: '', password: '', user_type: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -65,6 +73,26 @@ export default function RegisterPage() {
             </div>
           ))}
 
+          <div>
+            <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">Кто ты</label>
+            <div className="grid grid-cols-2 gap-1.5">
+              {USER_TYPES.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, user_type: value }))}
+                  className={`px-3 py-2.5 font-mono text-[11px] border transition-all text-left ${
+                    form.user_type === value
+                      ? 'border-[#c8f0a0] text-[#c8f0a0] bg-[#c8f0a0]/5'
+                      : 'border-white/5 text-[#666670] bg-[#111118] hover:border-white/15 hover:text-[#e8e8e0]'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {error && (
             <p className="font-mono text-[11px] text-[#e05555] border border-[#e05555]/20 px-3 py-2 bg-[#e05555]/5">
               {error}
@@ -73,7 +101,7 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !form.user_type}
             className="w-full bg-[#c8f0a0] text-[#0a0a0f] font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#d8ffb0] transition-colors disabled:opacity-50 mt-2"
           >
             {loading ? 'Создаём аккаунт...' : 'Создать аккаунт →'}

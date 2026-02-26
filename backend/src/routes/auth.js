@@ -8,10 +8,15 @@ import { sendVerificationEmail } from '../lib/email.js';
 const router = Router();
 
 // POST /api/auth/register
+const VALID_USER_TYPES = ['Врач', 'Студент', 'Преподаватель', 'Мед. персонал', 'Гость'];
+
 router.post('/register', async (req, res) => {
-  const { email, password, username } = req.body;
-  if (!email || !password || !username) {
+  const { email, password, username, user_type } = req.body;
+  if (!email || !password || !username || !user_type) {
     return res.status(400).json({ error: 'Заполни все поля' });
+  }
+  if (!VALID_USER_TYPES.includes(user_type)) {
+    return res.status(400).json({ error: 'Выбери кто ты' });
   }
   if (password.length < 8) {
     return res.status(400).json({ error: 'Пароль минимум 8 символов' });
@@ -42,9 +47,10 @@ router.post('/register', async (req, res) => {
     const verificationToken = uuidv4();
 
     // Обновляем профиль (триггер уже создал строку)
+    const role = user_type === 'Врач' ? 'doctor' : 'user';
     await supabase
       .from('profiles')
-      .update({ username, verification_token: verificationToken })
+      .update({ username, verification_token: verificationToken, specialty: user_type, role })
       .eq('id', authData.user.id);
 
     // Отправляем письмо
@@ -77,7 +83,7 @@ router.post('/login', async (req, res) => {
       .single();
 
     if (!profile.is_verified) {
-      return res.status(403).json({ error: 'Сначала подтверди email' });
+      return res.status(403).json({ error: 'Сначала подтверди почту' });
     }
 
     const token = jwt.sign(
@@ -106,14 +112,14 @@ router.get('/verify-email', async (req, res) => {
       .maybeSingle();
 
     if (!profile) return res.status(404).json({ error: 'Токен недействителен' });
-    if (profile.is_verified) return res.json({ message: 'Email уже подтверждён' });
+    if (profile.is_verified) return res.json({ message: 'Почта уже подтверждена' });
 
     await supabase
       .from('profiles')
       .update({ is_verified: true, verification_token: null })
       .eq('id', profile.id);
 
-    res.json({ message: 'Email подтверждён! Теперь можешь войти.' });
+    res.json({ message: 'Почта подтверждена! Теперь можешь войти.' });
   } catch (err) {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
@@ -130,7 +136,7 @@ router.post('/resend-verification', async (req, res) => {
       .maybeSingle();
 
     if (!profile) return res.status(404).json({ error: 'Пользователь не найден' });
-    if (profile.is_verified) return res.json({ message: 'Email уже подтверждён' });
+    if (profile.is_verified) return res.json({ message: 'Почта уже подтверждена' });
 
     const newToken = uuidv4();
     await supabase
