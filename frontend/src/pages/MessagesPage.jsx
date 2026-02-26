@@ -43,19 +43,19 @@ export default function MessagesPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
-      <h1 className="font-serif text-4xl font-bold mb-8">Сообщения</h1>
+      <h1 className="font-serif text-4xl font-bold mb-8 text-[#dce8ff]">Сообщения</h1>
 
-      <div className="flex h-[600px] bg-[#111118] border border-white/5">
+      <div className="flex h-[600px] bg-[#0b1226] border border-white/[0.06]">
         {/* Список переписок */}
-        <div className="w-72 border-r border-white/5 flex flex-col">
-          <div className="p-4 border-b border-white/5">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#444450]">Переписки</span>
+        <div className="w-72 border-r border-white/[0.06] flex flex-col">
+          <div className="p-4 border-b border-white/[0.06]">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#3a4a6a]">Переписки</span>
           </div>
           <div className="overflow-y-auto flex-1">
             {loading ? (
-              <p className="font-mono text-[11px] text-[#444450] p-4">Загрузка...</p>
+              <p className="font-mono text-[11px] text-[#3a4a6a] p-4">Загрузка...</p>
             ) : conversations.length === 0 ? (
-              <p className="font-mono text-[11px] text-[#444450] p-4 leading-relaxed">
+              <p className="font-mono text-[11px] text-[#3a4a6a] p-4 leading-relaxed">
                 Нет сообщений.<br />Напиши кому-нибудь с его профиля.
               </p>
             ) : (
@@ -63,21 +63,21 @@ export default function MessagesPage() {
                 <button
                   key={conv.id}
                   onClick={() => setActiveConv(conv)}
-                  className={`w-full text-left px-4 py-3 border-b border-white/5 transition-colors ${
-                    activeConv?.id === conv.id ? 'bg-[#16161f]' : 'hover:bg-[#16161f]/50'
+                  className={`w-full text-left px-4 py-3 border-b border-white/[0.06] transition-colors ${
+                    activeConv?.id === conv.id ? 'bg-[#101930]' : 'hover:bg-[#101930]/50'
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-[#16161f] border border-white/5 flex items-center justify-center font-mono text-[10px] text-[#666670]">
+                    <div className="w-8 h-8 rounded-full bg-[#101930] border border-white/[0.06] flex items-center justify-center font-mono text-[10px] text-[#5c6e98]">
                       {conv.other_user?.display_name?.[0] || '?'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-serif text-[13px] text-[#e8e8e0] truncate flex items-center gap-1">
+                      <div className="font-serif text-[13px] text-[#dce8ff] truncate flex items-center gap-1">
                         {conv.other_user?.display_name || conv.other_user?.username}
-                        {conv.unread && <span className="w-1.5 h-1.5 rounded-full bg-[#c8f0a0] inline-block ml-1" />}
+                        {conv.unread && <span className="w-1.5 h-1.5 rounded-full bg-[#4a80f5] inline-block ml-1" />}
                       </div>
                       {conv.last_message && (
-                        <div className="font-mono text-[10px] text-[#444450] truncate mt-0.5">
+                        <div className="font-mono text-[10px] text-[#3a4a6a] truncate mt-0.5">
                           {conv.last_message.content}
                         </div>
                       )}
@@ -93,15 +93,15 @@ export default function MessagesPage() {
         <div className="flex-1 flex flex-col">
           {!activeConv ? (
             <div className="flex-1 flex items-center justify-center">
-              <p className="font-mono text-[11px] text-[#444450]">Выбери переписку</p>
+              <p className="font-mono text-[11px] text-[#3a4a6a]">Выбери переписку</p>
             </div>
           ) : (
             <>
-              <div className="px-5 py-3 border-b border-white/5 flex items-center gap-3">
-                <div className="w-7 h-7 rounded-full bg-[#16161f] border border-white/5 flex items-center justify-center font-mono text-[10px] text-[#666670]">
+              <div className="px-5 py-3 border-b border-white/[0.06] flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full bg-[#101930] border border-white/[0.06] flex items-center justify-center font-mono text-[10px] text-[#5c6e98]">
                   {activeConv.other_user?.display_name?.[0] || '?'}
                 </div>
-                <span className="font-serif text-[14px]">
+                <span className="font-serif text-[14px] text-[#dce8ff]">
                   {activeConv.other_user?.display_name || activeConv.other_user?.username}
                 </span>
               </div>
@@ -113,11 +113,11 @@ export default function MessagesPage() {
                     <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-xs px-4 py-2.5 font-serif text-[14px] leading-relaxed ${
                         isMine
-                          ? 'bg-[#c8f0a0] text-[#0a0a0f]'
-                          : 'bg-[#16161f] border border-white/5 text-[#e8e8e0]'
+                          ? 'bg-[#1a3580] text-[#dce8ff]'
+                          : 'bg-[#101930] border border-white/[0.06] text-[#a8b8d8]'
                       }`}>
                         {msg.content}
-                        <div className={`font-mono text-[9px] mt-1 ${isMine ? 'text-[#0a0a0f]/50' : 'text-[#444450]'}`}>
+                        <div className={`font-mono text-[9px] mt-1 ${isMine ? 'text-[#dce8ff]/40' : 'text-[#3a4a6a]'}`}>
                           {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: ru })}
                         </div>
                       </div>
@@ -127,17 +127,17 @@ export default function MessagesPage() {
                 <div ref={bottomRef} />
               </div>
 
-              <form onSubmit={sendMessage} className="px-4 py-3 border-t border-white/5 flex gap-2">
+              <form onSubmit={sendMessage} className="px-4 py-3 border-t border-white/[0.06] flex gap-2">
                 <input
                   value={text}
                   onChange={e => setText(e.target.value)}
                   placeholder="Сообщение..."
-                  className="flex-1 bg-[#0a0a0f] border border-white/5 px-4 py-2.5 font-mono text-[12px] text-[#e8e8e0] focus:outline-none focus:border-[#c8f0a0] transition-colors"
+                  className="flex-1 bg-[#050918] border border-white/[0.06] px-4 py-2.5 font-mono text-[12px] text-[#dce8ff] placeholder-[#3a4a6a] focus:outline-none focus:border-[#4a80f5] transition-colors"
                 />
                 <button
                   type="submit"
                   disabled={!text.trim()}
-                  className="font-mono text-[11px] bg-[#c8f0a0] text-[#0a0a0f] px-5 hover:bg-[#d8ffb0] transition-colors disabled:opacity-40"
+                  className="font-mono text-[11px] bg-[#4a80f5] text-white px-5 hover:bg-[#6a97f7] transition-colors disabled:opacity-40"
                 >
                   →
                 </button>

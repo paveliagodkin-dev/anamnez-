@@ -14,10 +14,10 @@ export default function Layout() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-[#e8e8e0]">
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 py-5 bg-[#0a0a0f]/90 backdrop-blur border-b border-white/5">
-        <NavLink to="/" className="font-serif text-xl font-bold tracking-wide">
-          Анам<span className="text-[#c8f0a0]">нез</span>
+    <div className="min-h-screen bg-[#050918] text-[#dce8ff]">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 py-5 bg-[#050918]/80 backdrop-blur-md border-b border-white/[0.06]">
+        <NavLink to="/" className="font-serif text-xl font-bold tracking-wide text-[#dce8ff]">
+          Анам<span className="text-[#4a80f5]">нез</span>
         </NavLink>
 
         <ul className="flex gap-8">
@@ -27,7 +27,7 @@ export default function Layout() {
                 to={to}
                 className={({ isActive }) =>
                   `font-mono text-[11px] uppercase tracking-widest transition-colors ${
-                    isActive ? 'text-[#c8f0a0]' : 'text-[#666670] hover:text-[#e8e8e0]'
+                    isActive ? 'text-[#4a80f5]' : 'text-[#5c6e98] hover:text-[#dce8ff]'
                   }`
                 }
               >
@@ -42,19 +42,19 @@ export default function Layout() {
             <>
               <button
                 onClick={() => navigate('/messages')}
-                className="font-mono text-[11px] uppercase tracking-wider text-[#666670] hover:text-[#c8f0a0] transition-colors"
+                className="font-mono text-[11px] uppercase tracking-wider text-[#5c6e98] hover:text-[#4a80f5] transition-colors"
               >
                 Сообщения
               </button>
               <NavLink
                 to={`/profile/${user.username}`}
-                className="font-mono text-[11px] uppercase tracking-wider text-[#c8f0a0]"
+                className="font-mono text-[11px] uppercase tracking-wider text-[#4a80f5] hover:text-[#6a97f7] transition-colors"
               >
                 {user.display_name || user.username}
               </NavLink>
               <button
                 onClick={() => { logout(); navigate('/login'); }}
-                className="font-mono text-[11px] text-[#444450] hover:text-[#e8e8e0] transition-colors"
+                className="font-mono text-[11px] text-[#3a4a6a] hover:text-[#dce8ff] transition-colors"
               >
                 Выйти
               </button>
@@ -63,13 +63,13 @@ export default function Layout() {
             <>
               <NavLink
                 to="/login"
-                className="font-mono text-[11px] uppercase tracking-wider border border-[#444450] px-4 py-2 text-[#666670] hover:border-[#c8f0a0] hover:text-[#c8f0a0] transition-all"
+                className="font-mono text-[11px] uppercase tracking-wider border border-[#2a3a60] px-4 py-2 text-[#5c6e98] hover:border-[#4a80f5] hover:text-[#4a80f5] transition-all"
               >
                 Войти
               </NavLink>
               <NavLink
                 to="/register"
-                className="font-mono text-[11px] uppercase tracking-wider bg-[#c8f0a0] text-[#0a0a0f] px-4 py-2 hover:bg-[#d8ffb0] transition-colors"
+                className="font-mono text-[11px] uppercase tracking-wider bg-[#4a80f5] text-white px-4 py-2 hover:bg-[#6a97f7] transition-colors"
               >
                 Регистрация
               </NavLink>

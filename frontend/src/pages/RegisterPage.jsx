@@ -39,15 +39,15 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#050918] flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-6">✉️</div>
-          <h2 className="font-serif text-2xl mb-4">Проверь почту</h2>
-          <p className="font-mono text-[12px] text-[#666670] leading-relaxed">
-            Отправили письмо на <span className="text-[#c8f0a0]">{form.email}</span>.<br />
+          <h2 className="font-serif text-2xl mb-4 text-[#dce8ff]">Проверь почту</h2>
+          <p className="font-mono text-[12px] text-[#5c6e98] leading-relaxed">
+            Отправили письмо на <span className="text-[#4a80f5]">{form.email}</span>.<br />
             Нажми ссылку в письме чтобы активировать аккаунт.
           </p>
-          <Link to="/login" className="mt-8 inline-block font-mono text-[11px] uppercase tracking-wider text-[#444450] hover:text-[#e8e8e0] transition-colors">
+          <Link to="/login" className="mt-8 inline-block font-mono text-[11px] uppercase tracking-wider text-[#3a4a6a] hover:text-[#dce8ff] transition-colors">
             ← Войти
           </Link>
         </div>
@@ -56,15 +56,15 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#050918] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <Link to="/" className="block font-serif text-2xl font-bold mb-12 text-center">
-          Анам<span className="text-[#c8f0a0]">нез</span>
+        <Link to="/" className="block font-serif text-2xl font-bold mb-12 text-center text-[#dce8ff]">
+          Анам<span className="text-[#4a80f5]">нез</span>
         </Link>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">Кто ты</label>
+            <label className="block font-mono text-[10px] uppercase tracking-widest text-[#5c6e98] mb-2">Кто ты</label>
             <div className="grid grid-cols-2 gap-1.5">
               {USER_TYPES.map(({ value, label }) => (
                 <button
@@ -73,8 +73,8 @@ export default function RegisterPage() {
                   onClick={() => setForm(f => ({ ...f, user_type: value }))}
                   className={`px-3 py-2.5 font-mono text-[11px] border transition-all text-left ${
                     form.user_type === value
-                      ? 'border-[#c8f0a0] text-[#c8f0a0] bg-[#c8f0a0]/5'
-                      : 'border-white/5 text-[#666670] bg-[#111118] hover:border-white/15 hover:text-[#e8e8e0]'
+                      ? 'border-[#4a80f5] text-[#4a80f5] bg-[#4a80f5]/8'
+                      : 'border-white/[0.06] text-[#5c6e98] bg-[#0b1226] hover:border-white/[0.15] hover:text-[#dce8ff]'
                   }`}
                 >
                   {label}
@@ -84,28 +84,28 @@ export default function RegisterPage() {
           </div>
 
           {isGuest ? (
-            <div className="bg-[#111118] border border-white/5 p-5 space-y-4">
-              <p className="font-mono text-[11px] text-[#666670] uppercase tracking-widest">Режим гостя</p>
+            <div className="bg-[#0b1226] border border-white/[0.06] p-5 space-y-4">
+              <p className="font-mono text-[11px] text-[#5c6e98] uppercase tracking-widest">Режим гостя</p>
               <ul className="space-y-1.5">
                 {GUEST_LIMITS.map(item => (
-                  <li key={item} className="font-serif text-[13px] text-[#888] flex items-center gap-2">
-                    <span className="text-[#c8f0a0] text-[10px]">✓</span> {item}
+                  <li key={item} className="font-serif text-[13px] text-[#a8b8d8] flex items-center gap-2">
+                    <span className="text-[#4a80f5] text-[10px]">✓</span> {item}
                   </li>
                 ))}
-                <li className="font-serif text-[13px] text-[#444450] flex items-center gap-2">
+                <li className="font-serif text-[13px] text-[#3a4a6a] flex items-center gap-2">
                   <span className="text-[10px]">✗</span> Лайки и комментарии
                 </li>
-                <li className="font-serif text-[13px] text-[#444450] flex items-center gap-2">
+                <li className="font-serif text-[13px] text-[#3a4a6a] flex items-center gap-2">
                   <span className="text-[10px]">✗</span> Личные сообщения
                 </li>
-                <li className="font-serif text-[13px] text-[#444450] flex items-center gap-2">
+                <li className="font-serif text-[13px] text-[#3a4a6a] flex items-center gap-2">
                   <span className="text-[10px]">✗</span> Решение клинических случаев
                 </li>
               </ul>
               <button
                 type="button"
                 onClick={() => navigate('/diagnoz')}
-                className="w-full bg-[#c8f0a0] text-[#0a0a0f] font-mono text-[11px] uppercase tracking-widest py-3.5 hover:bg-[#d8ffb0] transition-colors"
+                className="w-full bg-[#4a80f5] text-white font-mono text-[11px] uppercase tracking-widest py-3.5 hover:bg-[#6a97f7] transition-colors"
               >
                 Просматривать →
               </button>
@@ -118,12 +118,12 @@ export default function RegisterPage() {
                 { key: 'password', label: 'Пароль', type: 'password', placeholder: '8+ символов' },
               ].map(({ key, label, type, placeholder }) => (
                 <div key={key}>
-                  <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">{label}</label>
+                  <label className="block font-mono text-[10px] uppercase tracking-widest text-[#5c6e98] mb-2">{label}</label>
                   <input
                     type={type}
                     value={form[key]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full bg-[#111118] border border-white/5 px-4 py-3 font-mono text-sm text-[#e8e8e0] focus:outline-none focus:border-[#c8f0a0] transition-colors"
+                    className="w-full bg-[#0b1226] border border-white/[0.06] px-4 py-3 font-mono text-sm text-[#dce8ff] placeholder-[#3a4a6a] focus:outline-none focus:border-[#4a80f5] transition-colors"
                     placeholder={placeholder}
                     required={!!form.user_type}
                   />
@@ -131,7 +131,7 @@ export default function RegisterPage() {
               ))}
 
               {error && (
-                <p className="font-mono text-[11px] text-[#e05555] border border-[#e05555]/20 px-3 py-2 bg-[#e05555]/5">
+                <p className="font-mono text-[11px] text-[#e05567] border border-[#e05567]/20 px-3 py-2 bg-[#e05567]/5">
                   {error}
                 </p>
               )}
@@ -139,7 +139,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading || !form.user_type}
-                className="w-full bg-[#c8f0a0] text-[#0a0a0f] font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#d8ffb0] transition-colors disabled:opacity-50 mt-2"
+                className="w-full bg-[#4a80f5] text-white font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#6a97f7] transition-colors disabled:opacity-50 mt-2"
               >
                 {loading ? 'Создаём аккаунт...' : 'Создать аккаунт →'}
               </button>
@@ -147,9 +147,9 @@ export default function RegisterPage() {
           )}
         </form>
 
-        <p className="mt-8 text-center font-mono text-[11px] text-[#444450]">
+        <p className="mt-8 text-center font-mono text-[11px] text-[#3a4a6a]">
           Уже есть аккаунт?{' '}
-          <Link to="/login" className="text-[#c8f0a0] hover:underline">Войти</Link>
+          <Link to="/login" className="text-[#4a80f5] hover:underline">Войти</Link>
         </p>
       </div>
     </div>
