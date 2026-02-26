@@ -5,6 +5,7 @@ import { useAuthStore } from '../hooks/useAuth.js';
 const navItems = [
   { to: '/diagnoz', label: 'Диагноз' },
   { to: '/feed', label: 'Лента' },
+  { to: '/cards', label: 'Карточки' },
 ];
 
 export default function Layout() {

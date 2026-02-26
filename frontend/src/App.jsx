@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import VerifyEmailPage from './pages/VerifyEmailPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import CardsPage from './pages/CardsPage.jsx';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore();
@@ -30,6 +31,7 @@ export default function App() {
           <Route index element={<Navigate to="/diagnoz" />} />
           <Route path="diagnoz" element={<DiagnosPage />} />
           <Route path="feed" element={<FeedPage />} />
+          <Route path="cards" element={<CardsPage />} />
           <Route path="messages" element={<PrivateRoute><MessagesPage /></PrivateRoute>} />
           <Route path="profile/:username" element={<ProfilePage />} />
         </Route>

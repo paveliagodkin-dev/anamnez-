@@ -14,6 +14,10 @@ async function request(path, options = {}) {
       ...options.headers
     }
   });
+  const ct = res.headers.get('content-type') || '';
+  if (!ct.includes('application/json')) {
+    throw new Error('Сервер временно недоступен. Попробуйте позже.');
+  }
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Ошибка запроса');
   return data;
