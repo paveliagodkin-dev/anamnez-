@@ -62,7 +62,7 @@ export default function ProfilePage() {
           {[
             { label: 'Очки', value: profile.score },
             { label: 'Случаев решено', value: profile.cases_solved },
-            { label: 'Роль', value: profile.role === 'doctor' ? 'Врач' : profile.role === 'admin' ? 'Admin' : 'Участник' },
+            { label: 'Роль', value: profile.role === 'doctor' ? 'Врач' : profile.role === 'admin' ? 'Администратор' : 'Участник' },
           ].map(({ label, value }) => (
             <div key={label} className="bg-[#111118] p-5 text-center">
               <div className="font-mono text-xl text-[#e8e8e0] mb-1">{value}</div>

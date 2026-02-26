@@ -48,8 +48,8 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {[
-            { key: 'email', label: 'Email', type: 'email', placeholder: 'doctor@hospital.ru' },
-            { key: 'username', label: 'Username', type: 'text', placeholder: 'dr_ivanov' },
+            { key: 'email', label: 'Эл. почта', type: 'email', placeholder: 'doctor@hospital.ru' },
+            { key: 'username', label: 'Псевдоним', type: 'text', placeholder: 'dr_ivanov' },
             { key: 'password', label: 'Пароль', type: 'password', placeholder: '8+ символов' },
           ].map(({ key, label, type, placeholder }) => (
             <div key={key}>

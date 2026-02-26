@@ -32,7 +32,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">Email</label>
+            <label className="block font-mono text-[10px] uppercase tracking-widest text-[#666670] mb-2">Эл. почта</label>
             <input
               type="email"
               value={email}

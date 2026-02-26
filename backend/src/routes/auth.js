@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
       .maybeSingle();
 
     if (existing) {
-      return res.status(409).json({ error: 'Email или username уже занят' });
+      return res.status(409).json({ error: 'Почта или псевдоним уже заняты' });
     }
 
     // Регистрируем через Supabase Auth
@@ -63,12 +63,12 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ error: 'Введи email и пароль' });
+    return res.status(400).json({ error: 'Введи почту и пароль' });
   }
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return res.status(401).json({ error: 'Неверный email или пароль' });
+    if (error) return res.status(401).json({ error: 'Неверная почта или пароль' });
 
     const { data: profile } = await supabase
       .from('profiles')
