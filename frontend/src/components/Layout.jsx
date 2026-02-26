@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuth.js';
+import { LogoFull } from './Logo.jsx';
 
 const navItems = [
   { to: '/diagnoz', label: 'Диагноз' },
@@ -8,31 +9,86 @@ const navItems = [
   { to: '/cards', label: 'Карточки' },
 ];
 
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function MessageIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 export default function Layout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
+  const searchRef = useRef(null);
 
   function closeMenu() { setMenuOpen(false); }
 
+  function openSearch() {
+    setSearchOpen(true);
+    setTimeout(() => searchRef.current?.focus(), 50);
+  }
+  function closeSearch() {
+    setSearchOpen(false);
+    setSearchVal('');
+  }
+
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    if (searchVal.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchVal.trim())}`);
+      closeSearch();
+      closeMenu();
+    }
+  }
+
+  // Close search on Escape
+  useEffect(() => {
+    function onKey(e) { if (e.key === 'Escape') closeSearch(); }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#050918] text-[#dce8ff]">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050918]/80 backdrop-blur-md border-b border-white/[0.06]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050918]/85 backdrop-blur-md border-b border-white/[0.05]">
         <div className="flex items-center justify-between px-5 md:px-10 h-14">
-          {/* Логотип */}
-          <NavLink to="/" className="font-serif text-xl font-bold tracking-wide text-[#dce8ff]">
-            Анам<span className="text-[#4a80f5]">нез</span>
+
+          {/* Logo */}
+          <NavLink to="/diagnoz">
+            <LogoFull />
           </NavLink>
 
-          {/* Десктоп навигация */}
-          <ul className="hidden md:flex gap-8">
+          {/* Desktop nav */}
+          <ul className="hidden md:flex gap-7">
             {navItems.map(({ to, label }) => (
               <li key={to}>
                 <NavLink
                   to={to}
                   className={({ isActive }) =>
                     `font-mono text-[11px] uppercase tracking-widest transition-colors ${
-                      isActive ? 'text-[#4a80f5]' : 'text-[#5c6e98] hover:text-[#dce8ff]'
+                      isActive ? 'text-[#4a80f5]' : 'text-[#4a5a7a] hover:text-[#dce8ff]'
                     }`
                   }
                 >
@@ -42,15 +98,43 @@ export default function Layout() {
             ))}
           </ul>
 
-          {/* Десктоп правый блок */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop right block */}
+          <div className="hidden md:flex items-center gap-3">
+            {/* Search bar (expands inline) */}
+            {searchOpen ? (
+              <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
+                <input
+                  ref={searchRef}
+                  value={searchVal}
+                  onChange={e => setSearchVal(e.target.value)}
+                  placeholder="Поиск случаев..."
+                  className="w-52 bg-[#0b1226] border border-[#4a80f5]/50 px-3 py-1.5 font-mono text-xs text-[#dce8ff] placeholder-[#3a4a6a] outline-none transition-all"
+                />
+                <button type="submit" className="text-[#4a80f5] hover:text-[#6a97f7] transition-colors p-1">
+                  <SearchIcon />
+                </button>
+                <button type="button" onClick={closeSearch} className="text-[#3a4a6a] hover:text-[#dce8ff] transition-colors p-1">
+                  <CloseIcon />
+                </button>
+              </form>
+            ) : (
+              <button
+                onClick={openSearch}
+                className="text-[#4a5a7a] hover:text-[#dce8ff] transition-colors p-1.5"
+                aria-label="Поиск"
+              >
+                <SearchIcon />
+              </button>
+            )}
+
             {user ? (
               <>
                 <button
                   onClick={() => navigate('/messages')}
-                  className="font-mono text-[11px] uppercase tracking-wider text-[#5c6e98] hover:text-[#4a80f5] transition-colors"
+                  className="text-[#4a5a7a] hover:text-[#4a80f5] transition-colors p-1.5"
+                  aria-label="Сообщения"
                 >
-                  Сообщения
+                  <MessageIcon />
                 </button>
                 <NavLink
                   to={`/profile/${user.username}`}
@@ -59,45 +143,60 @@ export default function Layout() {
                   {user.display_name || user.username}
                 </NavLink>
                 <button
-                  onClick={() => { logout(); navigate('/login'); }}
-                  className="font-mono text-[11px] text-[#3a4a6a] hover:text-[#dce8ff] transition-colors"
+                  onClick={() => { logout(); navigate('/'); }}
+                  className="font-mono text-[10px] text-[#2a3a50] hover:text-[#dce8ff] transition-colors"
                 >
                   Выйти
                 </button>
               </>
-            ) : (
-              <>
-                <NavLink
-                  to="/login"
-                  className="font-mono text-[11px] uppercase tracking-wider border border-[#2a3a60] px-4 py-2 text-[#5c6e98] hover:border-[#4a80f5] hover:text-[#4a80f5] transition-all"
-                >
-                  Войти
-                </NavLink>
-                <NavLink
-                  to="/register"
-                  className="font-mono text-[11px] uppercase tracking-wider bg-[#4a80f5] text-white px-4 py-2 hover:bg-[#6a97f7] transition-colors"
-                >
-                  Регистрация
-                </NavLink>
-              </>
-            )}
+            ) : null}
           </div>
 
-          {/* Мобильный hamburger */}
-          <button
-            className="md:hidden flex flex-col justify-center gap-[5px] w-8 h-8"
-            onClick={() => setMenuOpen(v => !v)}
-            aria-label="Меню"
-          >
-            <span className={`block w-5 h-px bg-[#5c6e98] transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-[6px]' : ''}`} />
-            <span className={`block w-5 h-px bg-[#5c6e98] transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
-            <span className={`block w-5 h-px bg-[#5c6e98] transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-[6px]' : ''}`} />
-          </button>
+          {/* Mobile right: search + hamburger */}
+          <div className="md:hidden flex items-center gap-3">
+            <button
+              onClick={searchOpen ? closeSearch : openSearch}
+              className="text-[#4a5a7a] hover:text-[#dce8ff] transition-colors p-1.5"
+              aria-label="Поиск"
+            >
+              {searchOpen ? <CloseIcon /> : <SearchIcon />}
+            </button>
+            <button
+              className="flex flex-col justify-center gap-[5px] w-8 h-8"
+              onClick={() => setMenuOpen(v => !v)}
+              aria-label="Меню"
+            >
+              <span className={`block w-5 h-px bg-[#5c6e98] transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-[6px]' : ''}`} />
+              <span className={`block w-5 h-px bg-[#5c6e98] transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block w-5 h-px bg-[#5c6e98] transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-[6px]' : ''}`} />
+            </button>
+          </div>
         </div>
 
-        {/* Мобильное меню */}
+        {/* Mobile search bar */}
+        {searchOpen && (
+          <div className="md:hidden border-t border-white/[0.05] bg-[#050918] px-4 py-3">
+            <form onSubmit={handleSearchSubmit} className="flex gap-2">
+              <input
+                ref={searchRef}
+                value={searchVal}
+                onChange={e => setSearchVal(e.target.value)}
+                placeholder="Поиск клинических случаев..."
+                className="flex-1 bg-[#0b1226] border border-[#4a80f5]/40 px-3 py-2.5 font-mono text-xs text-[#dce8ff] placeholder-[#3a4a6a] outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-[#4a80f5] text-white font-mono text-[10px] uppercase tracking-widest px-4 hover:bg-[#6a97f7] transition-colors"
+              >
+                Найти
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden border-t border-white/[0.06] bg-[#050918] px-5 py-4 space-y-1">
+          <div className="md:hidden border-t border-white/[0.05] bg-[#050918] px-5 py-4 space-y-1">
             {navItems.map(({ to, label }) => (
               <NavLink
                 key={to}
@@ -105,7 +204,7 @@ export default function Layout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `block font-mono text-[12px] uppercase tracking-widest py-2.5 transition-colors ${
-                    isActive ? 'text-[#4a80f5]' : 'text-[#5c6e98]'
+                    isActive ? 'text-[#4a80f5]' : 'text-[#4a5a7a]'
                   }`
                 }
               >
@@ -118,7 +217,7 @@ export default function Layout() {
                 <>
                   <button
                     onClick={() => { navigate('/messages'); closeMenu(); }}
-                    className="block w-full text-left font-mono text-[12px] uppercase tracking-wider text-[#5c6e98] py-2"
+                    className="block w-full text-left font-mono text-[12px] uppercase tracking-wider text-[#4a5a7a] py-2"
                   >
                     Сообщения
                   </button>
@@ -130,30 +229,13 @@ export default function Layout() {
                     {user.display_name || user.username}
                   </NavLink>
                   <button
-                    onClick={() => { logout(); navigate('/login'); closeMenu(); }}
-                    className="block w-full text-left font-mono text-[12px] text-[#3a4a6a] py-2"
+                    onClick={() => { logout(); navigate('/'); closeMenu(); }}
+                    className="block w-full text-left font-mono text-[12px] text-[#2a3a50] py-2"
                   >
                     Выйти
                   </button>
                 </>
-              ) : (
-                <div className="flex gap-3 pt-1">
-                  <NavLink
-                    to="/login"
-                    onClick={closeMenu}
-                    className="flex-1 text-center font-mono text-[11px] uppercase tracking-wider border border-[#2a3a60] py-2.5 text-[#5c6e98] hover:border-[#4a80f5] hover:text-[#4a80f5] transition-all"
-                  >
-                    Войти
-                  </NavLink>
-                  <NavLink
-                    to="/register"
-                    onClick={closeMenu}
-                    className="flex-1 text-center font-mono text-[11px] uppercase tracking-wider bg-[#4a80f5] text-white py-2.5 hover:bg-[#6a97f7] transition-colors"
-                  >
-                    Регистрация
-                  </NavLink>
-                </div>
-              )}
+              ) : null}
             </div>
           </div>
         )}

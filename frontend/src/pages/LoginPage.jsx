@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuth.js';
+import { LogoMark } from '../components/Logo.jsx';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -26,12 +27,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#050918] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-4">
-          <span className="heart-pulse text-5xl">🩵</span>
+        <div className="flex flex-col items-center mb-10 gap-3">
+          <LogoMark size={48} />
+          <Link to="/" className="font-bold text-xl text-[#dce8ff] tracking-wide">
+            Анам<span className="text-[#4a80f5]">нез</span>
+          </Link>
         </div>
-        <Link to="/" className="block font-serif text-2xl font-bold mb-12 text-center text-[#dce8ff]">
-          Анам<span className="text-[#4a80f5]">нез</span>
-        </Link>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
