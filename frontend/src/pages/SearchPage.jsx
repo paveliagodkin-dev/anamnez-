@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import api from '../lib/api.js';
+import { api } from '../lib/api.js';
 
 const DIFF_LABEL = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный' };
 const DIFF_COLOR = { easy: 'text-[#4ade80]', medium: 'text-[#facc15]', hard: 'text-[#f87171]' };
@@ -23,8 +23,8 @@ export default function SearchPage() {
     setInputVal(q);
     if (!q.trim()) { setResults([]); return; }
     setLoading(true);
-    api.get(`/cases/search?q=${encodeURIComponent(q)}`)
-      .then(r => setResults(r.data.cases || []))
+    api.searchCases(q)
+      .then(r => setResults(r.cases || []))
       .catch(() => setResults([]))
       .finally(() => setLoading(false));
   }, [q]);
