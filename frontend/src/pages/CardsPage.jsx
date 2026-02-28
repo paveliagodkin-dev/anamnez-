@@ -9,13 +9,13 @@ const SECTION_TABS = [
 
 function SectionTabs() {
   return (
-    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0">
+    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0 overflow-x-auto scrollbar-none">
       {SECTION_TABS.map(({ to, label }) => (
         <NavLink
           key={to}
           to={to}
           className={({ isActive }) =>
-            `font-mono text-[11px] uppercase tracking-widest px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+            `font-mono text-[10px] md:text-[11px] uppercase tracking-widest px-3 md:px-4 py-3 border-b-2 -mb-px transition-colors whitespace-nowrap shrink-0 ${
               isActive
                 ? 'border-[#4a80f5] text-[#4a80f5]'
                 : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
@@ -356,14 +356,14 @@ export default function CardsPage() {
   const knownInCategory = filtered.filter(c => known.has(c.id)).length;
 
   return (
-    <div className="min-h-screen px-4 py-8 md:py-12">
+    <div className="min-h-screen px-3 sm:px-4 py-6 md:py-12">
       <div className="max-w-6xl mx-auto">
         <SectionTabs />
       </div>
       <div className="max-w-md mx-auto">
 
         {/* Header */}
-        <div className="mb-7 text-center">
+        <div className="mb-5 md:mb-7 text-center">
           <h1 className="font-sans text-lg font-semibold text-[#dce8ff] tracking-wide mb-1">
             Карточки
           </h1>
@@ -373,12 +373,12 @@ export default function CardsPage() {
         </div>
 
         {/* Category tabs */}
-        <div className="flex gap-1.5 overflow-x-auto pb-3 mb-5 no-scrollbar">
+        <div className="flex gap-1.5 overflow-x-auto pb-3 mb-5 scrollbar-none">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => selectCategory(cat)}
-              className={`shrink-0 font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border transition-all ${
+              className={`shrink-0 font-mono text-[10px] uppercase tracking-wider px-3 py-2 border transition-all min-h-[40px] ${
                 category === cat
                   ? 'border-[#4a80f5] text-[#4a80f5] bg-[#4a80f5]/10'
                   : 'border-white/[0.07] text-[#3a4a6a] hover:text-[#5c6e98] hover:border-white/[0.14]'
@@ -410,7 +410,7 @@ export default function CardsPage() {
         {/* Flip card */}
         <div
           className="flip-container w-full cursor-pointer mb-5 select-none"
-          style={{ height: '300px' }}
+          style={{ height: 'clamp(240px, 45vw, 320px)' }}
           onClick={() => setFlipped(f => !f)}
         >
           <div className={`flip-inner relative w-full h-full ${flipped ? 'flipped' : ''}`}>
@@ -439,7 +439,7 @@ export default function CardsPage() {
                 <p className="font-mono text-[9px] uppercase tracking-widest text-[#2a3a60] mb-5">
                   Латинский термин
                 </p>
-                <h2 className="font-sans text-[2.2rem] font-light text-[#dce8ff] tracking-wide leading-none">
+                <h2 className="font-sans text-[clamp(1.5rem,6vw,2.2rem)] font-light text-[#dce8ff] tracking-wide leading-none">
                   {card.latin}
                 </h2>
               </div>
@@ -474,7 +474,7 @@ export default function CardsPage() {
                   Перевод
                 </p>
                 <h2
-                  className="font-sans text-[1.7rem] font-medium leading-tight mb-4"
+                  className="font-sans text-[clamp(1.2rem,5vw,1.7rem)] font-medium leading-tight mb-3 md:mb-4"
                   style={{ color: colors.accent }}
                 >
                   {card.translation}

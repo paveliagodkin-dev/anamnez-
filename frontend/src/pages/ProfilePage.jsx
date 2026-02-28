@@ -26,15 +26,15 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
-      <div className="bg-[#0b1226] border border-white/[0.06] p-10">
-        <div className="flex items-start justify-between mb-8">
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 rounded-full bg-[#101930] border border-white/[0.06] flex items-center justify-center font-serif text-2xl text-[#5c6e98]">
+    <div className="max-w-2xl mx-auto px-4 py-8 md:py-16">
+      <div className="bg-[#0b1226] border border-white/[0.06] p-5 md:p-10">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 md:mb-8">
+          <div className="flex items-center gap-4 md:gap-5">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#101930] border border-white/[0.06] flex items-center justify-center font-serif text-xl md:text-2xl text-[#5c6e98] shrink-0">
               {profile.display_name?.[0] || profile.username?.[0]}
             </div>
             <div>
-              <h1 className="font-serif text-2xl font-bold text-[#dce8ff]">{profile.display_name || profile.username}</h1>
+              <h1 className="font-serif text-xl md:text-2xl font-bold text-[#dce8ff]">{profile.display_name || profile.username}</h1>
               <div className="font-mono text-[11px] text-[#3a4a6a] mt-1">@{profile.username}</div>
               {profile.specialty && (
                 <div className="font-mono text-[11px] text-[#4a80f5] mt-1">{profile.specialty}</div>
@@ -45,7 +45,7 @@ export default function ProfilePage() {
           {user && user.id !== profile.id && (
             <button
               onClick={startChat}
-              className="font-mono text-[11px] uppercase tracking-wider border border-[#2a3a60] px-4 py-2 text-[#5c6e98] hover:border-[#4a80f5] hover:text-[#4a80f5] transition-all"
+              className="font-mono text-[11px] uppercase tracking-wider border border-[#2a3a60] px-4 py-3 text-[#5c6e98] hover:border-[#4a80f5] hover:text-[#4a80f5] transition-all self-start sm:self-auto min-h-[44px]"
             >
               Написать
             </button>
@@ -53,12 +53,12 @@ export default function ProfilePage() {
         </div>
 
         {profile.bio && (
-          <p className="font-serif italic text-[15px] text-[#5c6e98] leading-relaxed mb-8 border-l-2 border-[#4a80f5]/30 pl-4">
+          <p className="font-serif italic text-[14px] md:text-[15px] text-[#5c6e98] leading-relaxed mb-6 md:mb-8 border-l-2 border-[#4a80f5]/30 pl-4">
             {profile.bio}
           </p>
         )}
 
-        <div className="grid grid-cols-3 gap-px bg-white/[0.04]">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-white/[0.04]">
           {[
             { label: 'Очки', value: profile.score },
             { label: 'Случаев решено', value: profile.cases_solved },

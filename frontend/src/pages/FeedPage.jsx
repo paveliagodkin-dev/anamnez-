@@ -13,13 +13,13 @@ const SECTION_TABS = [
 
 function SectionTabs() {
   return (
-    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0">
+    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0 overflow-x-auto scrollbar-none">
       {SECTION_TABS.map(({ to, label }) => (
         <NavLink
           key={to}
           to={to}
           className={({ isActive }) =>
-            `font-mono text-[11px] uppercase tracking-widest px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+            `font-mono text-[10px] md:text-[11px] uppercase tracking-widest px-3 md:px-4 py-3 border-b-2 -mb-px transition-colors whitespace-nowrap shrink-0 ${
               isActive
                 ? 'border-[#4a80f5] text-[#4a80f5]'
                 : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
@@ -94,11 +94,11 @@ function PostCard({ post }) {
         <img src={post.image_url} alt="" className="w-full max-h-80 object-cover mb-4 border border-white/[0.06]" />
       )}
 
-      <div className="flex items-center gap-6 pt-3 border-t border-white/[0.06]">
+      <div className="flex items-center gap-4 pt-2 border-t border-white/[0.06]">
         {user ? (
           <button
             onClick={handleLike}
-            className={`font-mono text-[11px] flex items-center gap-1.5 transition-colors ${
+            className={`font-mono text-[12px] flex items-center gap-1.5 py-2 pr-3 transition-colors ${
               liked ? 'text-[#4a80f5]' : 'text-[#3a4a6a] hover:text-[#dce8ff]'
             }`}
           >
@@ -107,7 +107,7 @@ function PostCard({ post }) {
         ) : (
           <Link
             to="/register"
-            className="font-mono text-[11px] text-[#3a4a6a] hover:text-[#5c6e98] transition-colors flex items-center gap-1.5"
+            className="font-mono text-[12px] text-[#3a4a6a] hover:text-[#5c6e98] transition-colors flex items-center gap-1.5 py-2 pr-3"
             title="Войди чтобы ставить лайки"
           >
             ♥ {likesCount}
@@ -115,7 +115,7 @@ function PostCard({ post }) {
         )}
         <button
           onClick={loadComments}
-          className="font-mono text-[11px] text-[#3a4a6a] hover:text-[#dce8ff] transition-colors flex items-center gap-1.5"
+          className="font-mono text-[12px] text-[#3a4a6a] hover:text-[#dce8ff] transition-colors flex items-center gap-1.5 py-2"
         >
           ◻ {post.comments_count} комментариев
         </button>
@@ -192,9 +192,9 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
+    <div className="max-w-2xl mx-auto px-4 py-6 md:py-12">
       <SectionTabs />
-      <h1 className="font-serif text-4xl font-bold mb-8 text-[#dce8ff]">Лента</h1>
+      <h1 className="font-serif text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-[#dce8ff]">Лента</h1>
 
       {user && (
         <form onSubmit={submitPost} className="mb-8 bg-[#0b1226] border border-white/[0.06] p-5">

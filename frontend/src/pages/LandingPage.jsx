@@ -170,11 +170,11 @@ export default function LandingPage() {
 
       {/* Features grid */}
       <section className="relative z-10 px-6 md:px-12 pb-24 max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           {FEATURES.map(f => (
             <div
               key={f.title}
-              className={`bg-gradient-to-br ${f.bg} border ${f.border} p-7 transition-all duration-300 group`}
+              className={`bg-gradient-to-br ${f.bg} border ${f.border} p-4 md:p-7 transition-all duration-300 group`}
             >
               <div className="mb-5" style={{ color: f.accent }}>
                 {f.icon}
@@ -190,13 +190,13 @@ export default function LandingPage() {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mt-4 md:mt-6">
           {[
             { value: '100+', label: 'клинических случаев' },
             { value: '3', label: 'уровня сложности' },
             { value: '∞', label: 'медицинских карточек' },
           ].map(s => (
-            <div key={s.label} className="border border-white/[0.04] bg-white/[0.01] p-5 text-center">
+            <div key={s.label} className="border border-white/[0.04] bg-white/[0.01] p-4 md:p-5 text-center flex sm:flex-col items-center sm:items-center gap-4 sm:gap-0 justify-center sm:justify-start">
               <div className="text-2xl font-bold text-[#4a80f5] mb-1">{s.value}</div>
               <div className="font-mono text-[10px] uppercase tracking-widest text-[#3a4a6a]">{s.label}</div>
             </div>

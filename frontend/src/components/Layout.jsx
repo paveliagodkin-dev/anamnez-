@@ -163,16 +163,16 @@ export default function Layout() {
           </div>
 
           {/* Mobile right: search + hamburger */}
-          <div className="md:hidden flex items-center gap-3">
+          <div className="md:hidden flex items-center gap-1">
             <button
               onClick={searchOpen ? closeSearch : openSearch}
-              className="text-[#4a5a7a] hover:text-[#dce8ff] transition-colors p-1.5"
+              className="text-[#4a5a7a] hover:text-[#dce8ff] transition-colors p-3"
               aria-label="Поиск"
             >
               {searchOpen ? <CloseIcon /> : <SearchIcon />}
             </button>
             <button
-              className="flex flex-col justify-center gap-[5px] w-8 h-8"
+              className="flex flex-col justify-center gap-[5px] w-11 h-11 items-center"
               onClick={() => setMenuOpen(v => !v)}
               aria-label="Меню"
             >
@@ -206,14 +206,14 @@ export default function Layout() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden border-t border-white/[0.05] bg-[#050918] px-5 py-4 space-y-1">
+          <div className="md:hidden border-t border-white/[0.05] bg-[#050918] px-5 py-2">
             {navItems.map(({ to, label }) => (
               <NavLink
                 key={to}
                 to={to}
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `block font-mono text-[12px] uppercase tracking-widest py-2.5 transition-colors ${
+                  `block font-mono text-[13px] uppercase tracking-widest py-3.5 border-b border-white/[0.03] transition-colors ${
                     isActive ? 'text-[#4a80f5]' : 'text-[#4a5a7a]'
                   }`
                 }
@@ -222,14 +222,14 @@ export default function Layout() {
               </NavLink>
             ))}
 
-            <div className="border-t border-white/[0.04] pt-4 space-y-2">
+            <div className="pt-2 pb-2">
               {user?.role === 'guest' ? (
                 <>
-                  <span className="block font-mono text-[12px] uppercase tracking-widest text-[#3a4a6a] py-2">Гость</span>
+                  <span className="block font-mono text-[12px] uppercase tracking-widest text-[#3a4a6a] py-3.5 border-b border-white/[0.03]">Гость</span>
                   <NavLink
                     to="/login"
                     onClick={closeMenu}
-                    className="block font-mono text-[12px] uppercase tracking-wider text-[#4a80f5] py-2"
+                    className="block font-mono text-[13px] uppercase tracking-wider text-[#4a80f5] py-3.5"
                   >
                     Войти →
                   </NavLink>
@@ -238,20 +238,20 @@ export default function Layout() {
                 <>
                   <button
                     onClick={() => { navigate('/messages'); closeMenu(); }}
-                    className="block w-full text-left font-mono text-[12px] uppercase tracking-wider text-[#4a5a7a] py-2"
+                    className="block w-full text-left font-mono text-[13px] uppercase tracking-wider text-[#4a5a7a] py-3.5 border-b border-white/[0.03]"
                   >
                     Сообщения
                   </button>
                   <NavLink
                     to={`/profile/${user.username}`}
                     onClick={closeMenu}
-                    className="block font-mono text-[12px] uppercase tracking-wider text-[#4a80f5] py-2"
+                    className="block font-mono text-[13px] uppercase tracking-wider text-[#4a80f5] py-3.5 border-b border-white/[0.03]"
                   >
                     {user.display_name || user.username}
                   </NavLink>
                   <button
                     onClick={() => { logout(); navigate('/'); closeMenu(); }}
-                    className="block w-full text-left font-mono text-[12px] text-[#2a3a50] py-2"
+                    className="block w-full text-left font-mono text-[13px] text-[#2a3a50] py-3.5"
                   >
                     Выйти
                   </button>

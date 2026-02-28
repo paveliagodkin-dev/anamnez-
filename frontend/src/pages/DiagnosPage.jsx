@@ -11,13 +11,13 @@ const SECTION_TABS = [
 
 function SectionTabs() {
   return (
-    <div className="flex gap-1 mb-10 border-b border-white/[0.06] pb-0">
+    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0 overflow-x-auto scrollbar-none">
       {SECTION_TABS.map(({ to, label }) => (
         <NavLink
           key={to}
           to={to}
           className={({ isActive }) =>
-            `font-mono text-[11px] uppercase tracking-widest px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+            `font-mono text-[10px] md:text-[11px] uppercase tracking-widest px-3 md:px-4 py-3 border-b-2 -mb-px transition-colors whitespace-nowrap shrink-0 ${
               isActive
                 ? 'border-[#4a80f5] text-[#4a80f5]'
                 : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
@@ -110,21 +110,21 @@ function CaseModal({ c, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 backdrop-blur-sm p-4 pt-16 overflow-y-auto" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4 pt-12 sm:pt-16 overflow-y-auto" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="w-full max-w-2xl bg-[#0b1226] border border-white/[0.08] relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 font-mono text-[#3a4a6a] hover:text-[#dce8ff] text-lg transition-colors z-10"
+          className="absolute top-3 right-3 font-mono text-[#3a4a6a] hover:text-[#dce8ff] text-lg transition-colors z-10 w-9 h-9 flex items-center justify-center"
         >
           ✕
         </button>
 
         {loading ? (
-          <div className="p-10 text-center font-mono text-[12px] text-[#3a4a6a]">Загрузка...</div>
+          <div className="p-8 text-center font-mono text-[12px] text-[#3a4a6a]">Загрузка...</div>
         ) : !full ? (
-          <div className="p-10 text-center font-mono text-[12px] text-[#e05567]">Ошибка загрузки</div>
+          <div className="p-8 text-center font-mono text-[12px] text-[#e05567]">Ошибка загрузки</div>
         ) : (
-          <div className="p-7">
+          <div className="p-4 sm:p-7">
             <div className="flex items-center gap-3 mb-5">
               {DIFF_LABELS[full.difficulty] && (
                 <span className={`font-mono text-[9px] uppercase tracking-widest border px-2 py-1 ${DIFF_LABELS[full.difficulty].color}`}>
@@ -232,15 +232,15 @@ export default function DiagnosPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto px-4 py-6 md:py-10">
       <SectionTabs />
       {/* Hero */}
-      <div className="mb-12">
-        <p className="font-mono text-[11px] text-[#4a80f5] uppercase tracking-widest mb-3">Диагноз</p>
-        <h1 className="font-serif text-5xl md:text-7xl font-bold leading-none mb-5 text-[#dce8ff]">
+      <div className="mb-8 md:mb-12">
+        <p className="font-mono text-[10px] md:text-[11px] text-[#4a80f5] uppercase tracking-widest mb-2 md:mb-3">Диагноз</p>
+        <h1 className="font-serif text-3xl sm:text-5xl md:text-7xl font-bold leading-none mb-3 md:mb-5 text-[#dce8ff]">
           Поставь<br /><em className="text-[#7eb8f8]">правильный</em><br />диагноз
         </h1>
-        <p className="font-serif italic text-[#5c6e98] text-lg max-w-lg">
+        <p className="font-serif italic text-[#5c6e98] text-base md:text-lg max-w-lg">
           Реальные клинические случаи для врачей и студентов-медиков
         </p>
       </div>
@@ -260,12 +260,12 @@ export default function DiagnosPage() {
       )}
 
       {/* Фильтры */}
-      <div className="flex gap-2 mb-8">
+      <div className="flex gap-2 mb-6 md:mb-8 overflow-x-auto scrollbar-none pb-1">
         {DIFFICULTIES.map(d => (
           <button
             key={d.value}
             onClick={() => changeDifficulty(d.value)}
-            className={`font-mono text-[11px] uppercase tracking-wider px-4 py-2 border transition-all ${
+            className={`font-mono text-[11px] uppercase tracking-wider px-4 py-2.5 border transition-all shrink-0 min-h-[44px] ${
               difficulty === d.value
                 ? 'border-[#4a80f5] text-[#4a80f5] bg-[#4a80f5]/8'
                 : 'border-white/[0.06] text-[#5c6e98] hover:border-white/20 hover:text-[#dce8ff]'
