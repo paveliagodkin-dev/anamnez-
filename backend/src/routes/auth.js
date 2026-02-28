@@ -42,25 +42,15 @@ router.post('/register', async (req, res) => {
 
     if (authError) return res.status(400).json({ error: authError.message });
 
-    // Генерируем токен верификации
-    const verificationToken = uuidv4();
-
     // Обновляем профиль (триггер уже создал строку)
     const role = user_type === 'Врач' ? 'doctor' : 'user';
     await supabase
       .from('profiles')
-      .update({ username, verification_token: verificationToken, specialty: user_type, role })
+      .update({ username, specialty: user_type, role, is_verified: true })
       .eq('id', authData.user.id);
 
-    // Отправляем письмо (не блокируем регистрацию если SMTP не настроен)
-    try {
-      await sendVerificationEmail(email, verificationToken);
-    } catch (emailErr) {
-      console.warn('Email не отправлен (проверь SMTP настройки):', emailErr.message);
-    }
-
     res.status(201).json({
-      message: 'Аккаунт создан. Проверь email для подтверждения.'
+      message: 'Аккаунт создан. Можешь войти.'
     });
   } catch (err) {
     console.error(err);

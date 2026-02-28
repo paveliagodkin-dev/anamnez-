@@ -1,19 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { api } from '../lib/api.js';
-
-const GUEST_LIMITS = [
-  'Просмотр всех разделов',
-  'Чтение клинических случаев',
-  'Чтение историй и новостей',
-];
 
 const USER_TYPES = [
   { value: 'Врач', label: 'Врач' },
   { value: 'Студент', label: 'Студент' },
   { value: 'Преподаватель', label: 'Преподаватель' },
   { value: 'Мед. персонал', label: 'Мед. персонал' },
-  { value: 'Гость', label: 'Гость' },
 ];
 
 export default function RegisterPage() {
@@ -21,8 +14,6 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const isGuest = form.user_type === 'Гость';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -41,14 +32,13 @@ export default function RegisterPage() {
     return (
       <div className="min-h-screen bg-[#050918] flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
-          <div className="text-4xl mb-6">✉️</div>
-          <h2 className="font-serif text-2xl mb-4 text-[#dce8ff]">Проверь почту</h2>
+          <div className="text-4xl mb-6">✓</div>
+          <h2 className="font-serif text-2xl mb-4 text-[#dce8ff]">Аккаунт создан</h2>
           <p className="font-mono text-[12px] text-[#5c6e98] leading-relaxed">
-            Отправили письмо на <span className="text-[#4a80f5]">{form.email}</span>.<br />
-            Нажми ссылку в письме чтобы активировать аккаунт.
+            Можешь войти с почтой <span className="text-[#4a80f5]">{form.email}</span>.
           </p>
-          <Link to="/login" className="mt-8 inline-block font-mono text-[11px] uppercase tracking-wider text-[#3a4a6a] hover:text-[#dce8ff] transition-colors">
-            ← Войти
+          <Link to="/login" className="mt-8 inline-block font-mono text-[11px] uppercase tracking-wider text-[#4a80f5] hover:underline transition-colors">
+            Войти →
           </Link>
         </div>
       </div>
@@ -83,68 +73,37 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {isGuest ? (
-            <div className="bg-[#0b1226] border border-white/[0.06] p-5 space-y-4">
-              <p className="font-mono text-[11px] text-[#5c6e98] uppercase tracking-widest">Режим гостя</p>
-              <ul className="space-y-1.5">
-                {GUEST_LIMITS.map(item => (
-                  <li key={item} className="font-serif text-[13px] text-[#a8b8d8] flex items-center gap-2">
-                    <span className="text-[#4a80f5] text-[10px]">✓</span> {item}
-                  </li>
-                ))}
-                <li className="font-serif text-[13px] text-[#3a4a6a] flex items-center gap-2">
-                  <span className="text-[10px]">✗</span> Лайки и комментарии
-                </li>
-                <li className="font-serif text-[13px] text-[#3a4a6a] flex items-center gap-2">
-                  <span className="text-[10px]">✗</span> Личные сообщения
-                </li>
-                <li className="font-serif text-[13px] text-[#3a4a6a] flex items-center gap-2">
-                  <span className="text-[10px]">✗</span> Решение клинических случаев
-                </li>
-              </ul>
-              <button
-                type="button"
-                onClick={() => navigate('/diagnoz')}
-                className="w-full bg-[#4a80f5] text-white font-mono text-[11px] uppercase tracking-widest py-3.5 hover:bg-[#6a97f7] transition-colors"
-              >
-                Просматривать →
-              </button>
+          {[
+            { key: 'email', label: 'Эл. почта', type: 'email', placeholder: 'doctor@hospital.ru' },
+            { key: 'username', label: 'Псевдоним', type: 'text', placeholder: 'dr_ivanov' },
+            { key: 'password', label: 'Пароль', type: 'password', placeholder: '8+ символов' },
+          ].map(({ key, label, type, placeholder }) => (
+            <div key={key}>
+              <label className="block font-mono text-[10px] uppercase tracking-widest text-[#5c6e98] mb-2">{label}</label>
+              <input
+                type={type}
+                value={form[key]}
+                onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                className="w-full bg-[#0b1226] border border-white/[0.06] px-4 py-3 font-mono text-sm text-[#dce8ff] placeholder-[#3a4a6a] focus:outline-none focus:border-[#4a80f5] transition-colors"
+                placeholder={placeholder}
+                required
+              />
             </div>
-          ) : (
-            <>
-              {[
-                { key: 'email', label: 'Эл. почта', type: 'email', placeholder: 'doctor@hospital.ru' },
-                { key: 'username', label: 'Псевдоним', type: 'text', placeholder: 'dr_ivanov' },
-                { key: 'password', label: 'Пароль', type: 'password', placeholder: '8+ символов' },
-              ].map(({ key, label, type, placeholder }) => (
-                <div key={key}>
-                  <label className="block font-mono text-[10px] uppercase tracking-widest text-[#5c6e98] mb-2">{label}</label>
-                  <input
-                    type={type}
-                    value={form[key]}
-                    onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full bg-[#0b1226] border border-white/[0.06] px-4 py-3 font-mono text-sm text-[#dce8ff] placeholder-[#3a4a6a] focus:outline-none focus:border-[#4a80f5] transition-colors"
-                    placeholder={placeholder}
-                    required={!!form.user_type}
-                  />
-                </div>
-              ))}
+          ))}
 
-              {error && (
-                <p className="font-mono text-[11px] text-[#e05567] border border-[#e05567]/20 px-3 py-2 bg-[#e05567]/5">
-                  {error}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading || !form.user_type}
-                className="w-full bg-[#4a80f5] text-white font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#6a97f7] transition-colors disabled:opacity-50 mt-2"
-              >
-                {loading ? 'Создаём аккаунт...' : 'Создать аккаунт →'}
-              </button>
-            </>
+          {error && (
+            <p className="font-mono text-[11px] text-[#e05567] border border-[#e05567]/20 px-3 py-2 bg-[#e05567]/5">
+              {error}
+            </p>
           )}
+
+          <button
+            type="submit"
+            disabled={loading || !form.user_type}
+            className="w-full bg-[#4a80f5] text-white font-mono text-[11px] uppercase tracking-widest py-4 hover:bg-[#6a97f7] transition-colors disabled:opacity-50 mt-2"
+          >
+            {loading ? 'Создаём аккаунт...' : 'Создать аккаунт →'}
+          </button>
         </form>
 
         <p className="mt-8 text-center font-mono text-[11px] text-[#3a4a6a]">

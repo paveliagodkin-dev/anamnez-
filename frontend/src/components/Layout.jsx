@@ -127,7 +127,17 @@ export default function Layout() {
               </button>
             )}
 
-            {user ? (
+            {user?.role === 'guest' ? (
+              <>
+                <span className="font-mono text-[10px] text-[#3a4a6a] uppercase tracking-widest">Гость</span>
+                <NavLink
+                  to="/login"
+                  className="font-mono text-[11px] uppercase tracking-wider text-[#4a80f5] hover:text-[#6a97f7] transition-colors"
+                >
+                  Войти →
+                </NavLink>
+              </>
+            ) : user ? (
               <>
                 <button
                   onClick={() => navigate('/messages')}
@@ -213,7 +223,18 @@ export default function Layout() {
             ))}
 
             <div className="border-t border-white/[0.04] pt-4 space-y-2">
-              {user ? (
+              {user?.role === 'guest' ? (
+                <>
+                  <span className="block font-mono text-[12px] uppercase tracking-widest text-[#3a4a6a] py-2">Гость</span>
+                  <NavLink
+                    to="/login"
+                    onClick={closeMenu}
+                    className="block font-mono text-[12px] uppercase tracking-wider text-[#4a80f5] py-2"
+                  >
+                    Войти →
+                  </NavLink>
+                </>
+              ) : user ? (
                 <>
                   <button
                     onClick={() => { navigate('/messages'); closeMenu(); }}

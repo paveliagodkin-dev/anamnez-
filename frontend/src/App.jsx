@@ -34,7 +34,8 @@ function PublicOnlyRoute({ children }) {
       </div>
     );
   }
-  return user ? <Navigate to="/diagnoz" /> : children;
+  // Гости могут видеть публичные страницы (вход/регистрация)
+  return (user && user.role !== 'guest') ? <Navigate to="/diagnoz" /> : children;
 }
 
 export default function App() {
