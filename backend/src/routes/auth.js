@@ -35,10 +35,9 @@ router.post('/register', async (req, res) => {
     }
 
     // Регистрируем через Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      email_confirm: false
     });
 
     if (authError) return res.status(400).json({ error: authError.message });
