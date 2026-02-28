@@ -52,8 +52,12 @@ router.post('/register', async (req, res) => {
       .update({ username, verification_token: verificationToken, specialty: user_type, role })
       .eq('id', authData.user.id);
 
-    // Отправляем письмо
-    await sendVerificationEmail(email, verificationToken);
+    // Отправляем письмо (не блокируем регистрацию если SMTP не настроен)
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailErr) {
+      console.warn('Email не отправлен (проверь SMTP настройки):', emailErr.message);
+    }
 
     res.status(201).json({
       message: 'Аккаунт создан. Проверь email для подтверждения.'
