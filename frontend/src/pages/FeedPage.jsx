@@ -1,9 +1,37 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useAuthStore } from '../hooks/useAuth.js';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+
+const SECTION_TABS = [
+  { to: '/feed', label: 'Лента' },
+  { to: '/diagnoz', label: 'Клинические случаи' },
+  { to: '/cards', label: 'Карточки' },
+];
+
+function SectionTabs() {
+  return (
+    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0">
+      {SECTION_TABS.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive }) =>
+            `font-mono text-[11px] uppercase tracking-widest px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+              isActive
+                ? 'border-[#4a80f5] text-[#4a80f5]'
+                : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
+            }`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
+    </div>
+  );
+}
 
 function PostCard({ post }) {
   const { user } = useAuthStore();
@@ -165,6 +193,7 @@ export default function FeedPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
+      <SectionTabs />
       <h1 className="font-serif text-4xl font-bold mb-8 text-[#dce8ff]">Лента</h1>
 
       {user && (

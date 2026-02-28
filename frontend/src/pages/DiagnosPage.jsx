@@ -1,7 +1,35 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useAuthStore } from '../hooks/useAuth.js';
+
+const SECTION_TABS = [
+  { to: '/feed', label: 'Лента' },
+  { to: '/diagnoz', label: 'Клинические случаи' },
+  { to: '/cards', label: 'Карточки' },
+];
+
+function SectionTabs() {
+  return (
+    <div className="flex gap-1 mb-10 border-b border-white/[0.06] pb-0">
+      {SECTION_TABS.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive }) =>
+            `font-mono text-[11px] uppercase tracking-widest px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+              isActive
+                ? 'border-[#4a80f5] text-[#4a80f5]'
+                : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
+            }`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
+    </div>
+  );
+}
 
 const DIFFICULTIES = [
   { value: '', label: 'Все' },
@@ -205,6 +233,7 @@ export default function DiagnosPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
+      <SectionTabs />
       {/* Hero */}
       <div className="mb-12">
         <p className="font-mono text-[11px] text-[#4a80f5] uppercase tracking-widest mb-3">Диагноз</p>

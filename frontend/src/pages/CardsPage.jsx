@@ -1,4 +1,33 @@
 import { useState, useMemo } from 'react';
+import { NavLink } from 'react-router-dom';
+
+const SECTION_TABS = [
+  { to: '/feed', label: 'Лента' },
+  { to: '/diagnoz', label: 'Клинические случаи' },
+  { to: '/cards', label: 'Карточки' },
+];
+
+function SectionTabs() {
+  return (
+    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0">
+      {SECTION_TABS.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive }) =>
+            `font-mono text-[11px] uppercase tracking-widest px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+              isActive
+                ? 'border-[#4a80f5] text-[#4a80f5]'
+                : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
+            }`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
+    </div>
+  );
+}
 
 const CAT_STYLE = {
   'Анатомия':     { accent: '#4a80f5', bg: 'rgba(74,128,245,0.08)',  border: 'rgba(74,128,245,0.3)'  },
@@ -328,6 +357,9 @@ export default function CardsPage() {
 
   return (
     <div className="min-h-screen px-4 py-8 md:py-12">
+      <div className="max-w-6xl mx-auto">
+        <SectionTabs />
+      </div>
       <div className="max-w-md mx-auto">
 
         {/* Header */}

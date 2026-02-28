@@ -23,7 +23,7 @@ export default function LoginPage() {
     setError(''); setLoading(true);
     try {
       await login(email, password);
-      navigate('/diagnoz');
+      navigate('/feed');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
   function handleGuest() {
     loginAsGuest();
-    navigate('/diagnoz');
+    navigate('/feed');
   }
 
   return (
