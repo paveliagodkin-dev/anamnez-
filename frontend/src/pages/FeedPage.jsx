@@ -4,6 +4,7 @@ import { api } from '../lib/api.js';
 import { useAuthStore } from '../hooks/useAuth.js';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import RankBadge from '../components/RankBadge.jsx';
 
 const SECTION_TABS = [
   { to: '/feed', label: 'Лента' },
@@ -77,9 +78,7 @@ function PostCard({ post }) {
             <span className="font-serif text-[15px] text-[#dce8ff]">
               {post.author?.display_name || post.author?.username}
             </span>
-            {post.author?.role === 'doctor' && (
-              <span className="font-mono text-[9px] text-[#4a80f5] border border-[#4a80f5]/30 px-1.5 py-0.5">ВРАЧ</span>
-            )}
+            <RankBadge score={post.author?.score || 0} size="sm" />
             <span className="font-mono text-[10px] text-[#3a4a6a]">{timeAgo}</span>
           </div>
           {post.author?.specialty && (

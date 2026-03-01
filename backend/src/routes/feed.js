@@ -14,7 +14,7 @@ router.get('/', optionalAuth, async (req, res) => {
     .from('posts')
     .select(`
       *,
-      author:profiles(id, username, display_name, avatar_url, role, specialty),
+      author:profiles(id, username, display_name, avatar_url, role, specialty, score),
       liked:post_likes(user_id)
     `)
     .eq('section', section)

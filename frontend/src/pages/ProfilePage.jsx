@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useAuthStore } from '../hooks/useAuth.js';
+import { getRank, getNextRank, getRankProgress, RANKS } from '../lib/ranks.js';
+import RankBadge from '../components/RankBadge.jsx';
 
 export default function ProfilePage() {
   const { username } = useParams();
@@ -25,6 +27,11 @@ export default function ProfilePage() {
   if (loading) return <div className="flex justify-center py-24 font-mono text-[12px] text-[#3a4a6a]">Загрузка...</div>;
   if (!profile) return null;
 
+  const score = profile.score || 0;
+  const rank = getRank(score);
+  const nextRank = getNextRank(score);
+  const progress = getRankProgress(score);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 md:py-16">
       <div className="bg-[#0b1226] border border-white/[0.06] p-5 md:p-10">
@@ -34,7 +41,10 @@ export default function ProfilePage() {
               {profile.display_name?.[0] || profile.username?.[0]}
             </div>
             <div>
-              <h1 className="font-serif text-xl md:text-2xl font-bold text-[#dce8ff]">{profile.display_name || profile.username}</h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-serif text-xl md:text-2xl font-bold text-[#dce8ff]">{profile.display_name || profile.username}</h1>
+                <RankBadge score={score} size="sm" />
+              </div>
               <div className="font-mono text-[11px] text-[#3a4a6a] mt-1">@{profile.username}</div>
               {profile.specialty && (
                 <div className="font-mono text-[11px] text-[#4a80f5] mt-1">{profile.specialty}</div>
@@ -58,9 +68,52 @@ export default function ProfilePage() {
           </p>
         )}
 
+        {/* Rank progress */}
+        <div className="mb-6 p-4 border border-white/[0.05] bg-[#080e1e]">
+          <div className="flex items-center justify-between mb-3">
+            <RankBadge score={score} size="lg" />
+            {nextRank && (
+              <span className="font-mono text-[9px] text-[#3a4a6a] uppercase tracking-widest">
+                до «{nextRank.label}» — {nextRank.min - score} очков
+              </span>
+            )}
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full h-1 bg-white/[0.05] mb-2">
+            <div
+              className="h-full transition-all duration-500"
+              style={{ width: `${progress}%`, background: rank.color }}
+            />
+          </div>
+
+          {/* All ranks row */}
+          <div className="flex gap-1 mt-3 overflow-x-auto scrollbar-none">
+            {RANKS.map((r) => {
+              const isActive = r.label === rank.label;
+              return (
+                <div
+                  key={r.label}
+                  className="flex-1 min-w-[60px] text-center py-1.5 border transition-all"
+                  style={{
+                    borderColor: isActive ? `${r.color}60` : 'rgba(255,255,255,0.04)',
+                    background: isActive ? r.bg : 'transparent',
+                  }}
+                >
+                  <div className="text-[13px]" style={{ color: isActive ? r.color : '#2a3a60' }}>{r.symbol}</div>
+                  <div className="font-mono text-[8px] uppercase tracking-wide mt-0.5" style={{ color: isActive ? r.color : '#2a3a60' }}>
+                    {r.label}
+                  </div>
+                  <div className="font-mono text-[7px] text-[#1e2d40] mt-0.5">{r.min}+</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-white/[0.04]">
           {[
-            { label: 'Очки', value: profile.score },
+            { label: 'Очки', value: score },
             { label: 'Случаев решено', value: profile.cases_solved },
             { label: 'Роль', value: profile.role === 'doctor' ? 'Врач' : profile.role === 'admin' ? 'Администратор' : 'Участник' },
           ].map(({ label, value }) => (
