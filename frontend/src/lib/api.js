@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 function getToken() {
   return localStorage.getItem('anamnez_token');
@@ -14,6 +14,10 @@ async function request(path, options = {}) {
       ...options.headers
     }
   });
+  const ct = res.headers.get('content-type') || '';
+  if (!ct.includes('application/json')) {
+    throw new Error('Сервер временно недоступен. Попробуйте позже.');
+  }
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Ошибка запроса');
   return data;
@@ -51,6 +55,7 @@ export const api = {
 
   // Cases
   getCases: (difficulty, page = 1) => request(`/api/cases?${difficulty ? `difficulty=${difficulty}&` : ''}page=${page}`),
+  searchCases: (q) => request(`/api/cases/search?q=${encodeURIComponent(q)}`),
   getDailyCase: () => request('/api/cases/daily'),
   getCase: (id) => request(`/api/cases/${id}`),
   answerCase: (id, option_id) => request(`/api/cases/${id}/answer`, { method: 'POST', body: JSON.stringify({ option_id }) }),
