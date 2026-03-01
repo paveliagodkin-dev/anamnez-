@@ -17,6 +17,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Health check (before CORS to avoid header issues)
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'anamnez' }));
+
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
@@ -46,9 +49,6 @@ app.use('/api/comments', commentsRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/profile', profileRoutes);
-
-// Health check
-app.get('/health', (req, res) => res.json({ status: 'ok', service: 'anamnez' }));
 
 // Serve frontend static files (SPA)
 const DIST = resolve(__dirname, '../../frontend/dist');
