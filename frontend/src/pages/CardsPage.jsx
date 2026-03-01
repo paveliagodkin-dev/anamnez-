@@ -469,7 +469,7 @@ export default function CardsPage() {
                 <span className="font-mono text-[9px] text-[#2a3a60]">{card.latin}</span>
               </div>
 
-              <div className="flex-1 px-6 py-4 overflow-y-auto">
+              <div className="flex-1 px-6 py-4 overflow-y-auto overscroll-contain">
                 <p className="font-mono text-[9px] uppercase tracking-widest text-[#2a3a60] mb-2.5">
                   Перевод
                 </p>
