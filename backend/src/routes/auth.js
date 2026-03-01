@@ -80,8 +80,8 @@ router.post('/login', async (req, res) => {
       .eq('id', data.user.id)
       .single();
 
-    if (!profile.is_verified) {
-      return res.status(403).json({ error: 'Сначала подтверди почту' });
+    if (!profile) {
+      return res.status(404).json({ error: 'Профиль не найден' });
     }
 
     const token = jwt.sign(
