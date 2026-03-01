@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuth.js';
 import { LogoFull } from './Logo.jsx';
+import { getRank, getRankProgress } from '../lib/ranks.js';
 
 const navItems = [
   { to: '/diagnoz', label: 'Диагноз' },
@@ -148,9 +149,22 @@ export default function Layout() {
                 </button>
                 <NavLink
                   to={`/profile/${user.username}`}
-                  className="font-mono text-[11px] uppercase tracking-wider text-[#4a80f5] hover:text-[#6a97f7] transition-colors"
+                  className="flex flex-col items-end gap-1 group"
                 >
-                  {user.display_name || user.username}
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-[#4a80f5] group-hover:text-[#6a97f7] transition-colors">
+                    {user.display_name || user.username}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-16 h-[2px] bg-white/[0.07] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${getRankProgress(user.score || 0)}%`, background: getRank(user.score || 0).color }}
+                      />
+                    </div>
+                    <span className="font-mono text-[8px] uppercase tracking-widest" style={{ color: getRank(user.score || 0).color }}>
+                      {getRank(user.score || 0).symbol} {getRank(user.score || 0).label}
+                    </span>
+                  </div>
                 </NavLink>
                 <button
                   onClick={() => { logout(); navigate('/'); }}
@@ -245,9 +259,22 @@ export default function Layout() {
                   <NavLink
                     to={`/profile/${user.username}`}
                     onClick={closeMenu}
-                    className="block font-mono text-[13px] uppercase tracking-wider text-[#4a80f5] py-3.5 border-b border-white/[0.03]"
+                    className="block py-3.5 border-b border-white/[0.03]"
                   >
-                    {user.display_name || user.username}
+                    <span className="font-mono text-[13px] uppercase tracking-wider text-[#4a80f5]">
+                      {user.display_name || user.username}
+                    </span>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex-1 h-[2px] bg-white/[0.07] rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${getRankProgress(user.score || 0)}%`, background: getRank(user.score || 0).color }}
+                        />
+                      </div>
+                      <span className="font-mono text-[9px] uppercase tracking-widest shrink-0" style={{ color: getRank(user.score || 0).color }}>
+                        {getRank(user.score || 0).symbol} {getRank(user.score || 0).label}
+                      </span>
+                    </div>
                   </NavLink>
                   <button
                     onClick={() => { logout(); navigate('/'); closeMenu(); }}
