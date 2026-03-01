@@ -42,6 +42,11 @@ router.post('/register', async (req, res) => {
 
     if (authError) return res.status(400).json({ error: authError.message });
 
+    // Авто-подтверждаем email через admin API (у нас свой поток верификации)
+    await supabase.auth.admin.updateUserById(authData.user.id, {
+      email_confirm: true,
+    });
+
     // Обновляем профиль (триггер уже создал строку)
     const role = user_type === 'Врач' ? 'doctor' : 'user';
     await supabase
