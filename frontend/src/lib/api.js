@@ -54,4 +54,10 @@ export const api = {
   getDailyCase: () => request('/api/cases/daily'),
   getCase: (id) => request(`/api/cases/${id}`),
   answerCase: (id, option_id) => request(`/api/cases/${id}/answer`, { method: 'POST', body: JSON.stringify({ option_id }) }),
+
+  // Aurora 3D Agent
+  agentChat: (message, session_id) =>
+    request('/api/agent/chat', { method: 'POST', body: JSON.stringify({ message, session_id }) }),
+  resetAgentSession: (session_id) =>
+    request(`/api/agent/chat/${session_id}`, { method: 'DELETE' }),
 };

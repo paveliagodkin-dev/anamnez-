@@ -9,6 +9,7 @@ import commentsRoutes from './routes/comments.js';
 import messagesRoutes from './routes/messages.js';
 import casesRoutes from './routes/cases.js';
 import profileRoutes from './routes/profile.js';
+import agentRoutes from './routes/agent.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,6 +43,7 @@ app.use('/api/comments', commentsRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/agent', agentRoutes);
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', service: 'anamnez' }));
