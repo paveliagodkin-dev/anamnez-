@@ -12,6 +12,8 @@ import commentsRoutes from './routes/comments.js';
 import messagesRoutes from './routes/messages.js';
 import casesRoutes from './routes/cases.js';
 import profileRoutes from './routes/profile.js';
+import uploadRoutes from './routes/upload.js';
+import reactionsRoutes from './routes/reactions.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -25,7 +27,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
   credentials: true
 }));
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '70mb' }));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -49,6 +51,8 @@ app.use('/api/comments', commentsRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/reactions', reactionsRoutes);
 
 // Serve frontend static files (SPA)
 const DIST = resolve(__dirname, '../../frontend/dist');

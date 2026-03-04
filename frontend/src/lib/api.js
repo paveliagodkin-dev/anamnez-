@@ -42,6 +42,12 @@ export const api = {
   likePost: (id) => request(`/api/feed/${id}/like`, { method: 'POST' }),
   deletePost: (id) => request(`/api/feed/${id}`, { method: 'DELETE' }),
 
+  // Upload (base64 data URI)
+  uploadMedia: (body) => request('/api/upload', { method: 'POST', body: JSON.stringify(body) }),
+
+  // Reactions
+  reactPost: (postId, emoji) => request(`/api/reactions/${postId}`, { method: 'POST', body: JSON.stringify({ emoji }) }),
+
   // Comments
   getComments: (postId) => request(`/api/comments/${postId}`),
   createComment: (postId, body) => request(`/api/comments/${postId}`, { method: 'POST', body: JSON.stringify(body) }),
