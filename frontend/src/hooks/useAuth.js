@@ -24,6 +24,10 @@ export const useAuthStore = create((set, get) => ({
     set({ user: profile, token });
   },
 
+  loginAsGuest: () => {
+    set({ user: { role: 'guest', display_name: 'Гость' }, token: null });
+  },
+
   logout: () => {
     localStorage.removeItem('anamnez_token');
     set({ user: null, token: null });

@@ -14,8 +14,9 @@ router.get('/', optionalAuth, async (req, res) => {
     .from('posts')
     .select(`
       *,
-      author:profiles(id, username, display_name, avatar_url, role, specialty),
-      liked:post_likes(user_id)
+      author:profiles(id, username, display_name, avatar_url, role, specialty, score),
+      liked:post_likes(user_id),
+      reactions:post_reactions(emoji, user_id)
     `)
     .eq('section', section)
     .eq('is_published', true)
@@ -25,38 +26,44 @@ router.get('/', optionalAuth, async (req, res) => {
 
   if (error) return res.status(500).json({ error: error.message });
 
-  // Добавляем is_liked для текущего пользователя
-  const posts = data.map(post => ({
-    ...post,
-    is_liked: req.user
-      ? post.liked.some(l => l.user_id === req.user.id)
-      : false,
-    liked: undefined
-  }));
+  const posts = data.map(post => {
+    // Count reactions per emoji
+    const reactionCounts = {};
+    for (const r of post.reactions || []) {
+      reactionCounts[r.emoji] = (reactionCounts[r.emoji] || 0) + 1;
+    }
+    return {
+      ...post,
+      is_liked: req.user ? post.liked.some(l => l.user_id === req.user.id) : false,
+      user_reaction: req.user ? (post.reactions?.find(r => r.user_id === req.user.id)?.emoji || null) : null,
+      reaction_counts: reactionCounts,
+      liked: undefined,
+      reactions: undefined,
+    };
+  });
 
   res.json({ posts, page: +page });
 });
 
 // POST /api/feed - создать пост
 router.post('/', requireAuth, async (req, res) => {
-  const { content, image_url, section = 'feed' } = req.body;
+  const { content, image_url, video_url, section = 'feed' } = req.body;
   if (!content?.trim()) return res.status(400).json({ error: 'Пост не может быть пустым' });
 
   const { data, error } = await supabase
     .from('posts')
-    .insert({ content, image_url, section, author_id: req.user.id })
+    .insert({ content, image_url, video_url, section, author_id: req.user.id })
     .select(`*, author:profiles(id, username, display_name, avatar_url, role)`)
     .single();
 
   if (error) return res.status(500).json({ error: error.message });
-  res.status(201).json(data);
+  res.status(201).json({ ...data, reaction_counts: {}, user_reaction: null });
 });
 
 // POST /api/feed/:id/like
 router.post('/:id/like', requireAuth, async (req, res) => {
   const { id } = req.params;
 
-  // Проверяем, уже лайкнул
   const { data: existing } = await supabase
     .from('post_likes')
     .select('post_id')
@@ -65,7 +72,6 @@ router.post('/:id/like', requireAuth, async (req, res) => {
     .maybeSingle();
 
   if (existing) {
-    // Убираем лайк
     await supabase.from('post_likes').delete()
       .eq('post_id', id).eq('user_id', req.user.id);
     return res.json({ liked: false });
