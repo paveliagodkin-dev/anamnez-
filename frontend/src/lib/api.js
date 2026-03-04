@@ -6,15 +6,25 @@ function getToken() {
 
 async function request(path, options = {}) {
   const token = getToken();
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers
-    }
-  });
-  const data = await res.json();
+  let res;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers
+      }
+    });
+  } catch {
+    throw new Error('Сервер временно недоступен. Попробуйте позже.');
+  }
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error('Сервер временно недоступен. Попробуйте позже.');
+  }
   if (!res.ok) throw new Error(data.error || 'Ошибка запроса');
   return data;
 }
