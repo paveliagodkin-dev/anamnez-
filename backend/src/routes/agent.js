@@ -25,8 +25,8 @@ router.post('/chat', optionalAuth, async (req, res) => {
     return res.status(400).json({ error: 'Поле message обязательно' });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(503).json({ error: 'Aurora 3D Agent не настроен (нет ANTHROPIC_API_KEY)' });
+  if (!process.env.GROQ_API_KEY) {
+    return res.status(503).json({ error: 'Aurora 3D Agent не настроен (нет GROQ_API_KEY)' });
   }
 
   pruneExpiredSessions();
@@ -65,7 +65,7 @@ router.delete('/chat/:session_id', (req, res) => {
 router.get('/health', (_req, res) => {
   res.json({
     agent: 'Aurora 3D Agent',
-    configured: !!process.env.ANTHROPIC_API_KEY,
+    configured: !!process.env.GROQ_API_KEY,
     active_sessions: sessions.size,
   });
 });

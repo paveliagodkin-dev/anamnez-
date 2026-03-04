@@ -1,132 +1,145 @@
-import Anthropic from '@anthropic-ai/sdk';
+import Groq from 'groq-sdk';
 import supabase from './supabase.js';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const MODEL = 'claude-sonnet-4-6';
+// llama-3.3-70b-versatile — бесплатный, поддерживает tool use
+const MODEL = 'llama-3.3-70b-versatile';
 
 // ─── Инструменты агента ────────────────────────────────────────────────────
 
 const tools = [
   {
-    name: 'get_medical_cases',
-    description:
-      'Получить список клинических случаев с платформы Анамнез. Можно фильтровать по сложности.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        difficulty: {
-          type: 'string',
-          enum: ['easy', 'medium', 'hard'],
-          description: 'Сложность случая (необязательно)',
-        },
-        limit: {
-          type: 'number',
-          description: 'Количество случаев для получения (по умолчанию 5)',
-        },
-      },
-      required: [],
-    },
-  },
-  {
-    name: 'get_case_details',
-    description:
-      'Получить подробную информацию о конкретном клиническом случае по его ID, включая варианты ответов и 3D-визуализацию.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        case_id: {
-          type: 'string',
-          description: 'UUID клинического случая',
-        },
-      },
-      required: ['case_id'],
-    },
-  },
-  {
-    name: 'analyze_3d_scan',
-    description:
-      'Анализирует и интерпретирует 3D медицинское изображение (МРТ, КТ, рентген, УЗИ, ПЭТ). ' +
-      'Описывает патологические изменения, нормальную анатомию и клиническое значение находок ' +
-      'в контексте Aurora 3D визуализации.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        scan_type: {
-          type: 'string',
-          enum: ['МРТ', 'КТ', 'рентген', 'УЗИ', 'ПЭТ', 'МСКТ', '3D-реконструкция'],
-          description: 'Тип медицинского изображения',
-        },
-        region: {
-          type: 'string',
-          description: 'Анатомическая область (например: "головной мозг", "грудная клетка")',
-        },
-        findings: {
-          type: 'string',
-          description: 'Описание находок или жалоба пациента для анализа',
-        },
-        clinical_context: {
-          type: 'string',
-          description: 'Клинический контекст: симптомы, анамнез пациента (необязательно)',
-        },
-      },
-      required: ['scan_type', 'region', 'findings'],
-    },
-  },
-  {
-    name: 'get_anatomy_3d_model',
-    description:
-      'Предоставляет подробное описание 3D-анатомической модели выбранной области тела: ' +
-      'слои, структуры, сосуды, нервы — как в Aurora 3D Atlas.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        region: {
-          type: 'string',
-          description: 'Анатомическая область (например: "сердце", "коленный сустав")',
-        },
-        detail_level: {
-          type: 'string',
-          enum: ['базовый', 'стандартный', 'детальный'],
-          description: 'Уровень детализации модели',
-        },
-        focus: {
-          type: 'string',
-          description:
-            'Акцент описания: "сосуды", "нервы", "мышцы", "кости" (необязательно)',
-        },
-      },
-      required: ['region'],
-    },
-  },
-  {
-    name: 'differential_diagnosis',
-    description:
-      'Составляет дифференциальный диагноз на основе симптомов, данных осмотра и ' +
-      'результатов 3D-визуализации. Ранжирует диагнозы по вероятности.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        symptoms: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Список симптомов пациента',
-        },
-        imaging_findings: {
-          type: 'string',
-          description: 'Данные визуализации (МРТ/КТ/рентген)',
-        },
-        patient_data: {
-          type: 'object',
-          properties: {
-            age: { type: 'number' },
-            sex: { type: 'string', enum: ['М', 'Ж'] },
-            comorbidities: { type: 'array', items: { type: 'string' } },
+    type: 'function',
+    function: {
+      name: 'get_medical_cases',
+      description: 'Получить список клинических случаев с платформы Анамнез. Можно фильтровать по сложности.',
+      parameters: {
+        type: 'object',
+        properties: {
+          difficulty: {
+            type: 'string',
+            enum: ['easy', 'medium', 'hard'],
+            description: 'Сложность случая (необязательно)',
           },
-          description: 'Данные пациента (необязательно)',
+          limit: {
+            type: 'number',
+            description: 'Количество случаев для получения (по умолчанию 5)',
+          },
         },
+        required: [],
       },
-      required: ['symptoms'],
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_case_details',
+      description: 'Получить подробную информацию о конкретном клиническом случае по его ID, включая варианты ответов.',
+      parameters: {
+        type: 'object',
+        properties: {
+          case_id: {
+            type: 'string',
+            description: 'UUID клинического случая',
+          },
+        },
+        required: ['case_id'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'analyze_3d_scan',
+      description:
+        'Анализирует и интерпретирует 3D медицинское изображение (МРТ, КТ, рентген, УЗИ, ПЭТ). ' +
+        'Описывает патологические изменения, нормальную анатомию и клиническое значение находок ' +
+        'в контексте Aurora 3D визуализации.',
+      parameters: {
+        type: 'object',
+        properties: {
+          scan_type: {
+            type: 'string',
+            enum: ['МРТ', 'КТ', 'рентген', 'УЗИ', 'ПЭТ', 'МСКТ', '3D-реконструкция'],
+            description: 'Тип медицинского изображения',
+          },
+          region: {
+            type: 'string',
+            description: 'Анатомическая область (например: "головной мозг", "грудная клетка")',
+          },
+          findings: {
+            type: 'string',
+            description: 'Описание находок или жалоба пациента для анализа',
+          },
+          clinical_context: {
+            type: 'string',
+            description: 'Клинический контекст: симптомы, анамнез пациента (необязательно)',
+          },
+        },
+        required: ['scan_type', 'region', 'findings'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_anatomy_3d_model',
+      description:
+        'Предоставляет подробное описание 3D-анатомической модели выбранной области тела: ' +
+        'слои, структуры, сосуды, нервы — как в Aurora 3D Atlas.',
+      parameters: {
+        type: 'object',
+        properties: {
+          region: {
+            type: 'string',
+            description: 'Анатомическая область (например: "сердце", "коленный сустав")',
+          },
+          detail_level: {
+            type: 'string',
+            enum: ['базовый', 'стандартный', 'детальный'],
+            description: 'Уровень детализации модели',
+          },
+          focus: {
+            type: 'string',
+            description: 'Акцент описания: "сосуды", "нервы", "мышцы", "кости" (необязательно)',
+          },
+        },
+        required: ['region'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'differential_diagnosis',
+      description:
+        'Составляет дифференциальный диагноз на основе симптомов, данных осмотра и ' +
+        'результатов 3D-визуализации. Ранжирует диагнозы по вероятности.',
+      parameters: {
+        type: 'object',
+        properties: {
+          symptoms: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Список симптомов пациента',
+          },
+          imaging_findings: {
+            type: 'string',
+            description: 'Данные визуализации (МРТ/КТ/рентген)',
+          },
+          patient_data: {
+            type: 'object',
+            properties: {
+              age: { type: 'number' },
+              sex: { type: 'string', enum: ['М', 'Ж'] },
+              comorbidities: { type: 'array', items: { type: 'string' } },
+            },
+            description: 'Данные пациента (необязательно)',
+          },
+        },
+        required: ['symptoms'],
+      },
     },
   },
 ];
@@ -179,7 +192,6 @@ async function handleToolCall(toolName, toolInput) {
 
     case 'analyze_3d_scan': {
       const { scan_type, region, findings, clinical_context } = toolInput;
-      // Агент сам анализирует — возвращаем структурированный контекст для LLM
       return {
         scan_type,
         region,
@@ -196,16 +208,21 @@ async function handleToolCall(toolName, toolInput) {
         region,
         detail_level,
         focus: focus || 'все структуры',
-        model_data: getAnatomyModelData(region, detail_level, focus),
+        model_data: {
+          region,
+          detail_level,
+          focus,
+          layers: getAurora3DLayers(region),
+          note: 'Данные 3D-модели Aurora для образовательного использования',
+        },
       };
     }
 
     case 'differential_diagnosis': {
-      const { symptoms, imaging_findings, patient_data } = toolInput;
       return {
-        symptoms,
-        imaging_findings: imaging_findings || 'не указаны',
-        patient_data: patient_data || {},
+        symptoms: toolInput.symptoms,
+        imaging_findings: toolInput.imaging_findings || 'не указаны',
+        patient_data: toolInput.patient_data || {},
         analysis_requested: true,
       };
     }
@@ -218,36 +235,21 @@ async function handleToolCall(toolName, toolInput) {
 // ─── Вспомогательные данные для 3D ────────────────────────────────────────
 
 function getAurora3DLayers(region) {
-  const regionLower = region.toLowerCase();
-  if (regionLower.includes('мозг') || regionLower.includes('голов')) {
+  const r = region.toLowerCase();
+  if (r.includes('мозг') || r.includes('голов'))
     return ['кора', 'белое вещество', 'базальные ганглии', 'таламус', 'ствол', 'мозжечок', 'желудочки'];
-  }
-  if (regionLower.includes('сердц') || regionLower.includes('грудн')) {
+  if (r.includes('сердц') || r.includes('грудн'))
     return ['перикард', 'миокард', 'эндокард', 'клапаны', 'коронарные сосуды', 'лёгочные сосуды'];
-  }
-  if (regionLower.includes('позвон') || regionLower.includes('позвоноч')) {
+  if (r.includes('позвон') || r.includes('позвоноч'))
     return ['тело позвонка', 'дуга', 'межпозвоночный диск', 'спинной мозг', 'корешки', 'связки'];
-  }
-  if (regionLower.includes('колен') || regionLower.includes('сустав')) {
+  if (r.includes('колен') || r.includes('сустав'))
     return ['кость', 'хрящ', 'мениски', 'связки (ПКС, ЗКС)', 'синовиальная оболочка', 'суставная жидкость'];
-  }
   return ['поверхностный слой', 'средний слой', 'глубокий слой', 'сосуды', 'нервы'];
-}
-
-function getAnatomyModelData(region, detailLevel, focus) {
-  return {
-    region,
-    detail_level: detailLevel,
-    focus,
-    layers: getAurora3DLayers(region),
-    note: 'Данные 3D-модели Aurora для образовательного использования',
-  };
 }
 
 // ─── Основной агентный цикл ───────────────────────────────────────────────
 
-export async function runAurora3DAgent(userMessage, conversationHistory = []) {
-  const systemPrompt = `Ты — Aurora 3D Agent, медицинский AI-ассистент платформы Анамнез.
+const SYSTEM_PROMPT = `Ты — Aurora 3D Agent, медицинский AI-ассистент платформы Анамнез.
 
 Твои возможности:
 • Анализ 3D медицинских изображений (МРТ, КТ, рентген, УЗИ) — описываешь находки послойно
@@ -259,60 +261,56 @@ export async function runAurora3DAgent(userMessage, conversationHistory = []) {
 При анализе 3D-снимков структурируй ответ: Находки → Интерпретация → Рекомендации.
 Всегда указывай, что твой анализ носит образовательный характер и не заменяет заключение врача.`;
 
+export async function runAurora3DAgent(userMessage, conversationHistory = []) {
   const messages = [
     ...conversationHistory,
     { role: 'user', content: userMessage },
   ];
 
-  let response = await client.messages.create({
+  let response = await client.chat.completions.create({
     model: MODEL,
     max_tokens: 4096,
-    system: systemPrompt,
+    messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
     tools,
-    messages,
+    tool_choice: 'auto',
   });
 
-  // Агентный цикл: выполняем инструменты пока stop_reason === 'tool_use'
-  while (response.stop_reason === 'tool_use') {
-    const assistantMessage = { role: 'assistant', content: response.content };
-    messages.push(assistantMessage);
+  // Агентный цикл: выполняем инструменты пока finish_reason === 'tool_calls'
+  while (response.choices[0].finish_reason === 'tool_calls') {
+    const assistantMsg = response.choices[0].message;
+    messages.push(assistantMsg);
 
-    const toolResults = [];
-    for (const block of response.content) {
-      if (block.type === 'tool_use') {
-        const result = await handleToolCall(block.name, block.input);
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: block.id,
-          content: JSON.stringify(result),
-        });
+    const toolCalls = assistantMsg.tool_calls || [];
+    for (const call of toolCalls) {
+      let input;
+      try {
+        input = JSON.parse(call.function.arguments);
+      } catch {
+        input = {};
       }
+      const result = await handleToolCall(call.function.name, input);
+      messages.push({
+        role: 'tool',
+        tool_call_id: call.id,
+        content: JSON.stringify(result),
+      });
     }
 
-    messages.push({ role: 'user', content: toolResults });
-
-    response = await client.messages.create({
+    response = await client.chat.completions.create({
       model: MODEL,
       max_tokens: 4096,
-      system: systemPrompt,
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
       tools,
-      messages,
+      tool_choice: 'auto',
     });
   }
 
-  // Извлекаем текстовый ответ
-  const textContent = response.content.find(b => b.type === 'text');
-  const replyText = textContent ? textContent.text : 'Нет ответа';
-
-  // Обновляем историю для следующего вызова
-  const updatedHistory = [
-    ...messages,
-    { role: 'assistant', content: response.content },
-  ];
+  const replyText = response.choices[0].message.content || 'Нет ответа';
+  messages.push({ role: 'assistant', content: replyText });
 
   return {
     reply: replyText,
-    history: updatedHistory,
+    history: messages,
     usage: response.usage,
   };
 }
