@@ -5,6 +5,8 @@ const SECTION_TABS = [
   { to: '/feed', label: 'Лента' },
   { to: '/diagnoz', label: 'Клинические случаи' },
   { to: '/cards', label: 'Карточки' },
+  { to: '/slovar', label: 'Словарь' },
+  { to: '/specialists', label: 'Специалисты' },
 ];
 
 function SectionTabs() {

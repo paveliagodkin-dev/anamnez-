@@ -1,4 +1,35 @@
 import { useState, useMemo, useRef } from 'react';
+import { NavLink } from 'react-router-dom';
+
+const SECTION_TABS = [
+  { to: '/feed', label: 'Лента' },
+  { to: '/diagnoz', label: 'Клинические случаи' },
+  { to: '/cards', label: 'Карточки' },
+  { to: '/slovar', label: 'Словарь' },
+  { to: '/specialists', label: 'Специалисты' },
+];
+
+function SectionTabs() {
+  return (
+    <div className="flex gap-1 mb-8 border-b border-white/[0.06] pb-0 overflow-x-auto scrollbar-none">
+      {SECTION_TABS.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive }) =>
+            `font-mono text-[10px] md:text-[11px] uppercase tracking-widest px-3 md:px-4 py-3 border-b-2 -mb-px transition-colors whitespace-nowrap shrink-0 ${
+              isActive
+                ? 'border-[#4a80f5] text-[#4a80f5]'
+                : 'border-transparent text-[#3a4a6a] hover:text-[#dce8ff]'
+            }`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Источник: Энциклопедический словарь медицинских терминов / Под ред. Б.В. Петровского.
@@ -174,6 +205,7 @@ export default function SlovarPage() {
       </div>
 
       <div className="px-5 md:px-12 mt-6 max-w-5xl mx-auto">
+        <SectionTabs />
         {/* Search */}
         <div className="relative mb-5">
           <svg
