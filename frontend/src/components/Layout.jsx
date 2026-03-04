@@ -4,7 +4,6 @@ import { useAuthStore } from '../hooks/useAuth.js';
 const navItems = [
   { to: '/diagnoz', label: 'Диагноз' },
   { to: '/feed', label: 'Лента' },
-  { to: '/aurora', label: 'Aurora 3D' },
   { to: '/history', label: 'История' },
   { to: '/longevity', label: 'Долголетие' },
   { to: '/news', label: 'Новости' },
