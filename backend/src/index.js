@@ -19,6 +19,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Railway / reverse proxy support
+app.set('trust proxy', 1);
+
 // Health check (before CORS to avoid header issues)
 app.get('/health', (req, res) => res.json({ status: 'ok', service: 'anamnez' }));
 
