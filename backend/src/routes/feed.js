@@ -14,7 +14,7 @@ router.get('/', optionalAuth, async (req, res) => {
     .from('posts')
     .select(`
       *,
-      author:profiles(id, username, display_name, avatar_url, role, specialty, score),
+      author:profiles!author_id(id, username, display_name, avatar_url, role, specialty, score),
       liked:post_likes(user_id),
       reactions:post_reactions(emoji, user_id)
     `)
@@ -53,7 +53,7 @@ router.post('/', requireAuth, async (req, res) => {
   const { data, error } = await supabase
     .from('posts')
     .insert({ content, image_url, video_url, section, author_id: req.user.id })
-    .select(`*, author:profiles(id, username, display_name, avatar_url, role)`)
+    .select(`*, author:profiles!author_id(id, username, display_name, avatar_url, role)`)
     .single();
 
   if (error) return res.status(500).json({ error: error.message });

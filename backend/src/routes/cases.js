@@ -12,7 +12,7 @@ router.get('/', optionalAuth, async (req, res) => {
 
   let query = supabase
     .from('cases')
-    .select(`*, author:profiles(id, username, display_name)`, { count: 'exact' })
+    .select(`*, author:profiles!author_id(id, username, display_name)`, { count: 'exact' })
     .eq('is_published', true)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
@@ -62,7 +62,7 @@ router.get('/daily', optionalAuth, async (req, res) => {
   const today = new Date().toISOString().split('T')[0];
   const { data, error } = await supabase
     .from('cases')
-    .select(`*, author:profiles(id, username, display_name), options:case_options(id, letter, text)`)
+    .select(`*, author:profiles!author_id(id, username, display_name), options:case_options(id, letter, text)`)
     .eq('is_daily', true)
     .eq('daily_date', today)
     .single();
@@ -77,7 +77,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
     .from('cases')
     .select(`
       *,
-      author:profiles(id, username, display_name, avatar_url),
+      author:profiles!author_id(id, username, display_name, avatar_url),
       options:case_options(id, letter, text)
     `)
     .eq('id', req.params.id)
