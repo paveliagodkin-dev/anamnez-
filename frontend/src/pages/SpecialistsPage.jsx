@@ -33,6 +33,34 @@ function SectionTabs() {
 
 const CITIES = [
   {
+    city: 'Краснодар',
+    specialists: [
+      { name: 'Полянская Елена Геннадьевна', spec: 'Кардиолог, терапевт', rating: 4.8, reviews: 112, phone: '+7 (861) 299-35-46', clinic: 'Клиника «Клиницист», ул. Ставропольская, 223' },
+      { name: 'Нижельский Сергей Александрович', spec: 'Кардиолог-аритмолог', rating: 4.9, reviews: 183, phone: '+7 (861) 202-02-02', clinic: 'Клиника «Екатерининская», Кубанская набережная, 37/1' },
+    ],
+  },
+  {
+    city: 'Армавир',
+    specialists: [
+      { name: 'Штамонетян Арменак Арутюнович', spec: 'Кардиолог, функциональный диагност', rating: 4.7, reviews: 63, phone: '+7 (86137) 7-82-72', clinic: 'МЦ «Лекарь», ул. Луначарского, 398в' },
+      { name: 'Холоденин Юрий Павлович', spec: 'Невролог', rating: 5.0, reviews: 44, phone: '+7 (86137) 63-8-60', clinic: 'МЦ «Мой доктор», ул. Кирова, 57А' },
+    ],
+  },
+  {
+    city: 'Майкоп',
+    specialists: [
+      { name: 'Колесова Ольга Анатольевна', spec: 'Невролог', rating: 4.8, reviews: 79, phone: '+7 (965) 472-59-74', clinic: 'Клиника «Эксперт», Майкоп' },
+      { name: 'Барчо Аза Аскеровна', spec: 'Невролог', rating: 4.9, reviews: 98, phone: '+7 (8772) 57-99-66', clinic: 'МЦ «Гиппократ», ул. Чкалова, 63А' },
+    ],
+  },
+  {
+    city: 'Лабинск',
+    specialists: [
+      { name: 'Жарков Ринат Равильевич', spec: 'Терапевт', rating: 4.8, reviews: 52, phone: '+7 (86169) 7-45-00', clinic: 'ГБУЗ «Лабинская ЦРБ», ул. Пирогова, 1' },
+      { name: 'Слащев Семён Николаевич', spec: 'Хирург', rating: 4.7, reviews: 38, phone: '+7 (86169) 2-11-01', clinic: 'ГБУЗ «Лабинская ЦРБ», ул. Пирогова, 1' },
+    ],
+  },
+  {
     city: 'Москва',
     specialists: [
       { name: 'Иванова Елена Сергеевна', spec: 'Кардиолог', rating: 4.9, reviews: 128, phone: '+7 (495) 123-45-67', clinic: 'КБ «Кардиоцентр»' },
@@ -131,13 +159,13 @@ export default function SpecialistsPage() {
       {/* Header */}
       <div className="border-b border-white/[0.05] px-5 md:px-12 py-8">
         <p className="font-mono text-[10px] uppercase tracking-widest text-[#4a80f5] mb-1">
-          Рекомендованные врачи · 10 городов России
+          Рекомендованные врачи · 14 городов России
         </p>
         <h1 className="text-2xl md:text-3xl font-extrabold text-[#dce8ff] tracking-tight mb-1">
           Специалисты вашего города
         </h1>
         <p className="text-[#3a4a6a] text-sm">
-          {CITIES.length} городов · {CITIES.length * 2} специалистов
+          {CITIES.length} городов · {CITIES.reduce((acc, c) => acc + c.specialists.length, 0)} специалистов
         </p>
       </div>
 
