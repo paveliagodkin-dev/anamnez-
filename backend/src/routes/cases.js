@@ -41,6 +41,22 @@ router.get('/', optionalAuth, async (req, res) => {
   res.json({ cases, total: count, page: +page });
 });
 
+// GET /api/cases/search?q=кашель,лихорадка
+router.get('/search', optionalAuth, async (req, res) => {
+  const { q } = req.query;
+  if (!q?.trim()) return res.json({ cases: [] });
+
+  const terms = q.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  if (!terms.length) return res.json({ cases: [] });
+
+  const { data, error } = await supabase.rpc('search_cases_by_symptoms', {
+    search_terms: terms
+  });
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ cases: data || [] });
+});
+
 // GET /api/cases/daily - случай дня
 router.get('/daily', optionalAuth, async (req, res) => {
   const today = new Date().toISOString().split('T')[0];

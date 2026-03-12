@@ -51,6 +51,7 @@ export const api = {
 
   // Cases
   getCases: (difficulty, page = 1) => request(`/api/cases?${difficulty ? `difficulty=${difficulty}&` : ''}page=${page}`),
+  searchCases: (symptoms) => request(`/api/cases/search?q=${encodeURIComponent(symptoms.join(','))}`),
   getDailyCase: () => request('/api/cases/daily'),
   getCase: (id) => request(`/api/cases/${id}`),
   answerCase: (id, option_id) => request(`/api/cases/${id}/answer`, { method: 'POST', body: JSON.stringify({ option_id }) }),
