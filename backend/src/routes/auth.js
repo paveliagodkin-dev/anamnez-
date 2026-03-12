@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import supabase from '../lib/supabase.js';
 import { sendVerificationEmail } from '../lib/email.js';
+import { checkBanned, recordFailure, resetAttempts } from '../middleware/fail2ban.js';
 
 const router = Router();
 
@@ -64,7 +65,8 @@ router.post('/register', async (req, res) => {
 });
 
 // POST /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', checkBanned, async (req, res) => {
+  const ip = req.ip || req.socket.remoteAddress;
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'Введи почту и пароль' });
@@ -72,7 +74,10 @@ router.post('/login', async (req, res) => {
 
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return res.status(401).json({ error: 'Неверная почта или пароль' });
+    if (error) {
+      recordFailure(ip);
+      return res.status(401).json({ error: 'Неверная почта или пароль' });
+    }
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -81,8 +86,11 @@ router.post('/login', async (req, res) => {
       .single();
 
     if (!profile) {
+      recordFailure(ip);
       return res.status(404).json({ error: 'Профиль не найден' });
     }
+
+    resetAttempts(ip);
 
     const token = jwt.sign(
       { id: profile.id, email: profile.email, role: profile.role },
