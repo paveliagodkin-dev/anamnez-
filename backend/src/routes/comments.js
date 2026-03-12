@@ -10,7 +10,7 @@ router.get('/:postId', optionalAuth, async (req, res) => {
     .from('comments')
     .select(`
       *,
-      author:profiles(id, username, display_name, avatar_url, role),
+      author:profiles!author_id(id, username, display_name, avatar_url, role),
       liked:comment_likes(user_id)
     `)
     .eq('post_id', req.params.postId)
@@ -25,7 +25,7 @@ router.get('/:postId', optionalAuth, async (req, res) => {
     .from('comments')
     .select(`
       *,
-      author:profiles(id, username, display_name, avatar_url, role)
+      author:profiles!author_id(id, username, display_name, avatar_url, role)
     `)
     .in('parent_id', commentIds.length ? commentIds : ['none'])
     .order('created_at', { ascending: true });
@@ -53,7 +53,7 @@ router.post('/:postId', requireAuth, async (req, res) => {
       content,
       parent_id: parent_id || null
     })
-    .select(`*, author:profiles(id, username, display_name, avatar_url, role)`)
+    .select(`*, author:profiles!author_id(id, username, display_name, avatar_url, role)`)
     .single();
 
   if (error) return res.status(500).json({ error: error.message });
