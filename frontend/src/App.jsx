@@ -14,6 +14,7 @@ import CardsPage from './pages/CardsPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
 import SlovarPage from './pages/SlovarPage.jsx';
 import SpecialistsPage from './pages/SpecialistsPage.jsx';
+import SymptomsPage from './pages/SymptomsPage.jsx';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuthStore();
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="search" element={<SearchPage />} />
           <Route path="slovar" element={<SlovarPage />} />
           <Route path="specialists" element={<SpecialistsPage />} />
+          <Route path="symptoms" element={<SymptomsPage />} />
           <Route path="profile/:username" element={<ProfilePage />} />
         </Route>
       </Routes>

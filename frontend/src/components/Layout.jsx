@@ -9,6 +9,7 @@ const navItems = [
   { to: '/feed', label: 'Лента' },
   { to: '/cards', label: 'Карточки' },
   { to: '/slovar', label: 'Словарь' },
+  { to: '/symptoms', label: 'Симптомы' },
 ];
 
 function SearchIcon() {
