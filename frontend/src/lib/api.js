@@ -49,6 +49,9 @@ export const api = {
   startConversation: (target_user_id) => request('/api/messages/start', { method: 'POST', body: JSON.stringify({ target_user_id }) }),
   sendMessage: (convId, content) => request(`/api/messages/${convId}/send`, { method: 'POST', body: JSON.stringify({ content }) }),
 
+  // Diagnoses (symptom checker)
+  searchDiagnoses: (symptom) => request(`/api/diagnoses/search?q=${encodeURIComponent(symptom)}`),
+
   // Cases
   getCases: (difficulty, page = 1) => request(`/api/cases?${difficulty ? `difficulty=${difficulty}&` : ''}page=${page}`),
   searchCases: (symptoms) => request(`/api/cases/search?q=${encodeURIComponent(symptoms.join(','))}`),
